@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redback Systems — IT Support Chat</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --green: #00cc00;
+            --dim-green: #006600;
+            --amber: #ccaa00;
+            --red: #cc3333;
+            --bg: #0d0d0d;
+            --panel: #111111;
+            --border: #1f2f1f;
+            --text: #aaaaaa;
+        }
+
+        body {
+            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', 'Menlo', monospace;
+            background: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-size: 13px;
+        }
+
+        .chat-header {
+            background: var(--panel);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header-left h1 {
+            font-size: 13px;
+            color: var(--green);
+            font-weight: normal;
+            letter-spacing: 0.05em;
+        }
+
+        .chat-header-left p {
+            font-size: 11px;
+            color: var(--dim-green);
+            margin-top: 2px;
+        }
+
+        .status-indicator {
+            font-size: 11px;
+            color: var(--dim-green);
+        }
+
+        .status-indicator::before {
+            content: '● ';
+            color: var(--green);
+        }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            display: flex;
+            flex-direction: column;
+            max-width: 80%;
+        }
+
+        .message.user {
+            align-self: flex-end;
+        }
+
+        .message.customer {
+            align-self: flex-start;
+        }
+
+        .message-label {
+            font-size: 10px;
+            color: var(--dim-green);
+            margin-bottom: 4px;
+            letter-spacing: 0.05em;
+        }
+
+        .message.user .message-label {
+            text-align: right;
+            color: var(--amber);
+        }
+
+        .message-content {
+            padding: 8px 12px;
+            line-height: 1.6;
+            font-size: 13px;
+        }
+
+        .message.customer .message-content {
+            background: #0a0a0a;
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--dim-green);
+            color: var(--text);
+        }
+
+        .message.user .message-content {
+            background: #0a1a0a;
+            border: 1px solid var(--border);
+            border-right: 3px solid var(--amber);
+            color: #cccc88;
+        }
+
+        .input-area {
+            padding: 12px 20px;
+            background: var(--panel);
+            border-top: 1px solid var(--border);
+        }
+
+        .input-prompt {
+            font-size: 11px;
+            color: var(--dim-green);
+            margin-bottom: 6px;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+        }
+
+        #messageInput {
+            flex: 1;
+            padding: 8px 12px;
+            background: #0a0a0a;
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--dim-green);
+            color: var(--green);
+            font-family: inherit;
+            font-size: 13px;
+            outline: none;
+            resize: none;
+            min-height: 36px;
+            max-height: 100px;
+        }
+
+        #messageInput:focus {
+            border-color: var(--dim-green);
+            border-left-color: var(--green);
+        }
+
+        #messageInput::placeholder {
+            color: var(--dim-green);
+        }
+
+        #sendButton {
+            padding: 8px 16px;
+            background: transparent;
+            color: var(--green);
+            border: 1px solid var(--dim-green);
+            font-family: inherit;
+            font-size: 12px;
+            cursor: pointer;
+            white-space: nowrap;
+            height: 36px;
+        }
+
+        #sendButton:hover:not(:disabled) {
+            background: var(--dim-green);
+            color: var(--bg);
+        }
+
+        #sendButton:disabled {
+            color: var(--dim-green);
+            cursor: not-allowed;
+        }
+
+        .typing-indicator {
+            display: none;
+            align-self: flex-start;
+            padding: 8px 12px;
+            background: #0a0a0a;
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--dim-green);
+            color: var(--dim-green);
+            font-size: 11px;
+        }
+
+        .typing-indicator.active { display: block; }
+
+        .typing-dots {
+            display: inline-flex;
+            gap: 3px;
+            vertical-align: middle;
+        }
+
+        .typing-dots span {
+            width: 5px;
+            height: 5px;
+            background: var(--dim-green);
+            display: inline-block;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { opacity: 0.3; }
+            30% { opacity: 1; }
+        }
+
+        .error-bar {
+            background: #1a0000;
+            border-bottom: 1px solid var(--red);
+            color: var(--red);
+            padding: 6px 20px;
+            font-size: 11px;
+            display: none;
+        }
+
+        .error-bar.active { display: block; }
+
+        /* ---- FEEDBACK OVERLAY ---- */
+        .feedback-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .feedback-overlay.active { display: flex; }
+
+        .feedback-panel {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-top: 3px solid var(--amber);
+            padding: 24px;
+            max-width: 520px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .feedback-panel h2 {
+            font-size: 13px;
+            color: var(--amber);
+            font-weight: normal;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .feedback-loading {
+            color: var(--dim-green);
+            font-size: 12px;
+            padding: 20px 0;
+        }
+
+        .score-display {
+            display: none;
+        }
+
+        .score-display.active { display: block; }
+
+        .score-number {
+            font-size: 48px;
+            color: var(--green);
+            line-height: 1;
+            margin: 12px 0 4px;
+        }
+
+        .score-label {
+            font-size: 11px;
+            color: var(--dim-green);
+            margin-bottom: 16px;
+        }
+
+        .score-bar-wrap {
+            background: #0a0a0a;
+            border: 1px solid var(--border);
+            height: 8px;
+            margin-bottom: 20px;
+        }
+
+        .score-bar-fill {
+            height: 100%;
+            background: var(--dim-green);
+            transition: width 1s ease;
+        }
+
+        .feedback-verdict {
+            padding: 10px 14px;
+            border-left: 3px solid var(--dim-green);
+            background: #0a0a0a;
+            font-size: 12px;
+            line-height: 1.7;
+            color: var(--text);
+            margin-bottom: 12px;
+        }
+
+        .feedback-verdict.good { border-left-color: var(--green); }
+        .feedback-verdict.warn { border-left-color: var(--amber); }
+        .feedback-verdict.poor { border-left-color: var(--red); }
+
+        .feedback-comments {
+            padding: 10px 14px;
+            background: #0a0a0a;
+            border: 1px solid var(--border);
+            font-size: 12px;
+            line-height: 1.7;
+            color: var(--text);
+            margin-bottom: 16px;
+            font-style: italic;
+        }
+
+        .feedback-comments::before {
+            content: '// client comments\n';
+            color: var(--dim-green);
+            font-style: normal;
+            display: block;
+            margin-bottom: 6px;
+            font-size: 11px;
+        }
+
+        .close-btn {
+            width: 100%;
+            padding: 8px;
+            background: transparent;
+            color: var(--dim-green);
+            border: 1px solid var(--border);
+            font-family: inherit;
+            font-size: 12px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .close-btn:hover {
+            background: #1a1a1a;
+            color: var(--text);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); }
+    </style>
+</head>
+<body>
+
+<div class="chat-header">
+    <div class="chat-header-left">
+        <h1>REDBACK SYSTEMS // IT Support</h1>
+        <p id="scenario-desc">Helpdesk session — resolve the client issue</p>
+    </div>
+    <div class="status-indicator" id="status-text">CLIENT CONNECTED</div>
+</div>
+
+<div class="error-bar" id="errorBar"></div>
+
+<div class="messages" id="messages">
+    <div class="message customer">
+        <div class="message-label">client / sarah.chen@redbacksystems.com</div>
+        <div class="message-content" id="opening-message">
+            Hi, I'm having trouble with the printer on the 3rd floor. It's not working at all!
+        </div>
+    </div>
+</div>
+
+<div class="typing-indicator" id="typingIndicator">
+    <div class="typing-dots"><span></span><span></span><span></span></div>
+    client is typing...
+</div>
+
+<div class="input-area">
+    <div class="input-prompt">you (IT support) ~$</div>
+    <div class="input-container">
+        <textarea
+            id="messageInput"
+            placeholder="type your response and press Enter..."
+            rows="1"
+        ></textarea>
+        <button id="sendButton">SEND</button>
+    </div>
+</div>
+
+<div class="feedback-overlay" id="feedbackOverlay">
+    <div class="feedback-panel">
+        <h2>// Session Feedback — Sarah Chen</h2>
+
+        <div class="feedback-loading" id="feedbackLoading">
+            <div class="typing-dots"><span></span><span></span><span></span></div>
+            &nbsp; generating client feedback...
+        </div>
+
+        <div class="score-display" id="scoreDisplay">
+            <div class="score-number" id="scoreNumber">-</div>
+            <div class="score-label" id="scoreLabel">/ 5 — calculating...</div>
+            <div class="score-bar-wrap">
+                <div class="score-bar-fill" id="scoreBarFill" style="width:0%"></div>
+            </div>
+            <div class="feedback-verdict" id="feedbackVerdict"></div>
+            <div class="feedback-comments" id="feedbackComments"></div>
+            <button class="close-btn" id="closeBtn">[ close feedback ]</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    /* ---- CONFIG ---- */
+    const API_KEY = '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';
+    const MODEL   = 'llama-3.1-8b-instant';
+    const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+
+    /* URL params for scenario customisation */
+    const params   = new URLSearchParams(window.location.search);
+    const scenario = params.get('scenario') || 'printer';
+    const clientName = params.get('client') || 'Sarah Chen';
+    const issueDesc  = params.get('issue')  || 'the printer on the 3rd floor is not working';
+
+    /* Update header */
+    document.getElementById('scenario-desc').textContent =
+        `helpdesk session — ${issueDesc}`;
+
+    /* ---- SYSTEM PROMPT ---- */
+    const systemPrompt = `You are playing the role of ${clientName}, a frustrated office manager at Redback Systems who is having an IT problem: ${issueDesc}.
+
+BACKGROUND:
+- You work on the 3rd floor, Marketing department
+- The printer (HP LaserJet Pro on the 3rd floor) stopped working this morning
+- You have an important presentation to print for a meeting in 2 hours
+- You've tried pressing buttons but nothing happens
+- The printer shows no lights or display
+
+WHAT YOU KNOW (only reveal if asked):
+- The printer model is "HP LaserJet Pro 4001dne"
+- It's plugged into the wall outlet near your desk
+- No error messages show on the display (because it's completely off)
+- You haven't checked if other devices work in that outlet
+- You did spill a bit of coffee near the printer area yesterday, but didn't think much of it
+- The power cable looks fine to you (but you haven't checked if it's fully plugged in at the back of the printer)
+
+THE ACTUAL PROBLEM (students need to discover this through questioning):
+- The power cable came loose from the back of the printer
+- Once they ask you to check the power cable connection at the printer itself, you find it is loose
+- When you push it back in firmly, the printer powers on and works fine
+
+YOUR PERSONALITY:
+- Frustrated but polite
+- Not very technical — you need clear, simple instructions without jargon
+- Stressed about the presentation deadline
+- Willing to follow instructions but asks for clarification if IT terms are used
+- Grateful when resolved
+
+IMPORTANT: Stay in character. Do not volunteer information unless specifically asked. Make the IT support person guide you through troubleshooting. Be realistic — if asked to check something, respond as if actually doing it. Keep responses concise and natural (2-4 sentences max).
+
+RESOLUTION: When the problem is solved (printer powers on after reconnecting cable), end your response with exactly: ##RESOLVED## on a new line.
+
+SATISFACTION EVALUATION: After resolution you will be asked to rate the IT support from 0-5 based on:
+- Speed and efficiency (fewer steps = higher)
+- Clarity of instructions (plain language = higher)
+- Professionalism and empathy (patient and supportive = higher)
+- Whether the problem was actually resolved
+
+Be honest. A perfect 5 is rare. Average good service = 3-4. Poor service = 0-2.`;
+
+    /* ---- STATE ---- */
+    let history = [
+        { role: 'system', content: systemPrompt },
+        { role: 'assistant', content: `Hi, I'm having trouble with ${issueDesc}!` }
+    ];
+
+    /* ---- DOM ---- */
+    const messagesDiv   = document.getElementById('messages');
+    const input         = document.getElementById('messageInput');
+    const sendBtn       = document.getElementById('sendButton');
+    const errorBar      = document.getElementById('errorBar');
+    const typingInd     = document.getElementById('typingIndicator');
+    const overlay       = document.getElementById('feedbackOverlay');
+    const feedbackLoad  = document.getElementById('feedbackLoading');
+    const scoreDisplay  = document.getElementById('scoreDisplay');
+    const scoreNumber   = document.getElementById('scoreNumber');
+    const scoreLabel    = document.getElementById('scoreLabel');
+    const scoreBarFill  = document.getElementById('scoreBarFill');
+    const feedbackVerdict  = document.getElementById('feedbackVerdict');
+    const feedbackComments = document.getElementById('feedbackComments');
+    const closeBtn      = document.getElementById('closeBtn');
+
+    /* ---- HELPERS ---- */
+    function addMessage(text, role) {
+        const wrap = document.createElement('div');
+        wrap.className = `message ${role}`;
+        const label = role === 'user'
+            ? 'you (IT support)'
+            : `client / ${clientName.toLowerCase().replace(' ','.')}@redbacksystems.com`;
+        wrap.innerHTML = `
+            <div class="message-label">${label}</div>
+            <div class="message-content">${text}</div>`;
+        messagesDiv.appendChild(wrap);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    function showError(msg) {
+        errorBar.textContent = msg;
+        errorBar.classList.add('active');
+        setTimeout(() => errorBar.classList.remove('active'), 6000);
+    }
+
+    function setLoading(on) {
+        sendBtn.disabled = on;
+        input.disabled   = on;
+        typingInd.classList.toggle('active', on);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    /* ---- SEND ---- */
+    async function sendMessage() {
+        const text = input.value.trim();
+        if (!text) return;
+
+        addMessage(text, 'user');
+        input.value = '';
+        input.style.height = 'auto';
+        setLoading(true);
+
+        history.push({ role: 'user', content: text });
+
+        try {
+            const res = await fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${API_KEY}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: MODEL,
+                    messages: history,
+                    temperature: 0.7,
+                    max_tokens: 250
+                })
+            });
+
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.error?.message || res.status);
+            }
+
+            const data = await res.json();
+            let reply = data.choices[0]?.message?.content || "Sorry, could you repeat that?";
+
+            const resolved = reply.includes('##RESOLVED##');
+            reply = reply.replace('##RESOLVED##', '').trim();
+
+            history.push({ role: 'assistant', content: reply });
+            setLoading(false);
+            addMessage(reply, 'customer');
+
+            if (resolved) {
+                document.getElementById('status-text').textContent = 'TICKET RESOLVED';
+                setTimeout(showFeedback, 1800);
+            }
+
+        } catch (e) {
+            setLoading(false);
+            showError(`API error: ${e.message}`);
+        }
+    }
+
+    /* ---- FEEDBACK ---- */
+    async function showFeedback() {
+        overlay.classList.add('active');
+        feedbackLoad.style.display = 'block';
+        scoreDisplay.classList.remove('active');
+
+        const evalPrompt = {
+            role: 'user',
+            content: `The issue is resolved. Fill out a satisfaction survey about the IT support you just received. Respond with ONLY valid JSON — no markdown, no explanation:
+{"rating": <0-5 integer>, "comments": "<2-3 sentences of specific honest feedback>"}`
+        };
+
+        try {
+            const res = await fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${API_KEY}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: MODEL,
+                    messages: [...history, evalPrompt],
+                    temperature: 0.6,
+                    max_tokens: 200
+                })
+            });
+
+            const data = await res.json();
+            const raw = data.choices[0]?.message?.content || '{}';
+            const match = raw.match(/\{[\s\S]*\}/);
+            const fb = match ? JSON.parse(match[0]) : { rating: 3, comments: "Thanks for your help." };
+            displayFeedback(fb.rating, fb.comments);
+
+        } catch (e) {
+            displayFeedback(3, "Thank you for resolving the issue.");
+        }
+    }
+
+    function displayFeedback(rating, comments) {
+        feedbackLoad.style.display = 'none';
+        scoreDisplay.classList.add('active');
+
+        const labels = ['Very Dissatisfied','Dissatisfied','Needs Improvement','Satisfactory','Good','Excellent'];
+        scoreNumber.textContent = rating;
+        scoreLabel.textContent  = `/ 5 — ${labels[rating] || ''}`;
+
+        setTimeout(() => {
+            scoreBarFill.style.width = (rating / 5 * 100) + '%';
+        }, 100);
+
+        let verdictClass, verdictText;
+        if (rating >= 4) {
+            verdictClass = 'good';
+            verdictText  = 'Client satisfied. Good diagnostic approach and clear communication.';
+        } else if (rating >= 2) {
+            verdictClass = 'warn';
+            verdictText  = 'Client had reservations. Review the feedback for specific improvement areas.';
+        } else {
+            verdictClass = 'poor';
+            verdictText  = 'Client dissatisfied. Review your diagnostic process and communication style.';
+        }
+
+        feedbackVerdict.className = `feedback-verdict ${verdictClass}`;
+        feedbackVerdict.textContent = verdictText;
+        feedbackComments.textContent = `"${comments}"`;
+    }
+
+    closeBtn.addEventListener('click', () => overlay.classList.remove('active'));
+
+    /* ---- INPUT HANDLING ---- */
+    sendBtn.addEventListener('click', sendMessage);
+
+    input.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+
+    input.addEventListener('input', () => {
+        input.style.height = 'auto';
+        input.style.height = Math.min(input.scrollHeight, 100) + 'px';
+    });
+
+    input.focus();
+</script>
+</body>
+</html>

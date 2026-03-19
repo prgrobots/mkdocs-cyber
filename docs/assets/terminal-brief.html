@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REDBACK SYSTEMS // INCOMING TRANSMISSION</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green:       #39ff14;
+    --green-dim:   #1a7a0a;
+    --green-dark:  #0d3d06;
+    --amber:       #ffb000;
+    --red:         #e63946;
+    --bg:          #030d03;
+    --scanline:    rgba(0,0,0,0.12);
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--green);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 15px;
+    overflow: hidden;
+    cursor: none;
+  }
+
+  /* ── CRT effects ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      var(--scanline) 3px,
+      var(--scanline) 4px
+    );
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse at center,
+      transparent 60%,
+      rgba(0,0,0,0.7) 100%
+    );
+    pointer-events: none;
+    z-index: 99;
+  }
+
+  /* custom cursor */
+  #cursor-dot {
+    position: fixed;
+    width: 8px; height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    box-shadow: 0 0 6px var(--green);
+    transition: transform 0.1s;
+  }
+
+  /* ── Layout ── */
+  #screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 3rem;
+    overflow: hidden;
+    z-index: 10;
+  }
+
+  /* ── Header bar ── */
+  #header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--green-dim);
+    padding-bottom: 0.6rem;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeIn 0.3s ease 0.2s forwards;
+  }
+
+  #header .logo {
+    font-family: 'VT323', monospace;
+    font-size: 1.4rem;
+    color: var(--green);
+    letter-spacing: 0.15em;
+    text-shadow: 0 0 10px var(--green);
+  }
+
+  #header .meta {
+    font-size: 0.75rem;
+    color: var(--green-dim);
+    letter-spacing: 0.1em;
+  }
+
+  #clock {
+    color: var(--amber);
+  }
+
+  /* ── Terminal output area ── */
+  #output {
+    flex: 1;
+    overflow: hidden;
+    line-height: 1.75;
+    letter-spacing: 0.03em;
+  }
+
+  .line {
+    display: block;
+    white-space: pre-wrap;
+    min-height: 1.75em;
+  }
+
+  .line.system   { color: var(--green-dim); }
+  .line.prompt   { color: var(--green); }
+  .line.alert    { color: var(--red);   text-shadow: 0 0 8px var(--red); }
+  .line.amber    { color: var(--amber); }
+  .line.bright   { color: #fff; text-shadow: 0 0 4px var(--green); }
+  .line.divider  { color: var(--green-dim); }
+  .line.blank    { }
+  .line.indent   { padding-left: 2em; color: #a8d8a0; }
+
+  /* blinking cursor */
+  .cursor {
+    display: inline-block;
+    width: 0.6em;
+    height: 1em;
+    background: var(--green);
+    vertical-align: text-bottom;
+    animation: blink 1s step-end infinite;
+    box-shadow: 0 0 6px var(--green);
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+
+  /* ── Proceed button ── */
+  #proceed-wrap {
+    margin-top: 2rem;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  #proceed-wrap.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  #proceed-btn {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    color: var(--bg);
+    background: var(--green);
+    border: none;
+    padding: 0.8rem 2.5rem;
+    cursor: none;
+    text-transform: uppercase;
+    position: relative;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: background 0.15s, box-shadow 0.15s;
+    box-shadow: 0 0 20px rgba(57,255,20,0.4);
+  }
+
+  #proceed-btn:hover {
+    background: #fff;
+    box-shadow: 0 0 30px rgba(57,255,20,0.8);
+  }
+
+  #skip-btn {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: var(--green-dim);
+    background: transparent;
+    border: 1px solid var(--green-dim);
+    padding: 0.5rem 1.2rem;
+    cursor: none;
+    text-transform: uppercase;
+    margin-left: 1rem;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  #skip-btn:hover {
+    color: var(--green);
+    border-color: var(--green);
+  }
+
+  /* ── Glitch on load ── */
+  @keyframes glitch {
+    0%   { clip-path: inset(40% 0 61% 0); transform: translate(-4px); }
+    20%  { clip-path: inset(92% 0 1% 0);  transform: translate(4px); }
+    40%  { clip-path: inset(43% 0 1% 0);  transform: translate(-2px); }
+    60%  { clip-path: inset(25% 0 58% 0); transform: translate(2px); }
+    80%  { clip-path: inset(54% 0 7% 0);  transform: translate(-4px); }
+    100% { clip-path: inset(58% 0 43% 0); transform: translate(0); }
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+
+  /* noise texture overlay */
+  #noise {
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 98;
+    opacity: 0.4;
+  }
+</style>
+</head>
+<body>
+
+<div id="noise"></div>
+<div id="cursor-dot"></div>
+
+<div id="screen">
+  <div id="header">
+    <span class="logo">REDBACK SYSTEMS // SOC TERMINAL v2.1</span>
+    <span class="meta">NODE: TAFE-LAB-01 &nbsp;|&nbsp; USER: ANALYST &nbsp;|&nbsp; <span id="clock"></span></span>
+  </div>
+
+  <div id="output"></div>
+
+  <div id="proceed-wrap">
+    <button id="proceed-btn" onclick="proceed()">[ ACCEPT MISSION ] &gt;&gt;</button>
+    <button id="skip-btn" onclick="skipToEnd()">SKIP</button>
+  </div>
+</div>
+
+<script>
+// ── Clock ──────────────────────────────────────────────
+function updateClock() {
+  const now = new Date();
+  document.getElementById('clock').textContent =
+    now.toLocaleTimeString('en-AU', {hour12: false}) + ' AWST';
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// ── Custom cursor ──────────────────────────────────────
+const dot = document.getElementById('cursor-dot');
+document.addEventListener('mousemove', e => {
+  dot.style.left = e.clientX - 4 + 'px';
+  dot.style.top  = e.clientY - 4 + 'px';
+});
+
+// ── URL params ─────────────────────────────────────────
+const params   = new URLSearchParams(window.location.search);
+const missionB64  = params.get('brief');   // base64-encoded JSON
+const labUrl      = params.get('lab') || '#';
+const weekNum     = params.get('week') || '??';
+const missionId   = params.get('id')   || 'RBS-2025-' + weekNum.padStart(3,'0');
+const classification = params.get('class') || 'TRAINING // CONTROLLED ENVIRONMENT';
+
+// Decode mission lines from base64 JSON array
+let missionLines = [];
+try {
+  missionLines = JSON.parse(atob(missionB64));
+} catch(e) {
+  missionLines = [
+    "No mission brief loaded.",
+    "Usage: terminal-brief.html?brief=BASE64&lab=URL&week=8&id=RBS-2025-008",
+    "",
+    "Encode your brief as: btoa(JSON.stringify([...lines...]))"
+  ];
+}
+
+// ── Script builder ─────────────────────────────────────
+// Each entry: [delay_ms, class, text]
+// delay is cumulative from previous line START (not end)
+
+function buildScript() {
+  const script = [
+    [0,    'system',  'REDBACK SYSTEMS SECURE TERMINAL'],
+    [80,   'system',  '─────────────────────────────────────────────────────'],
+    [160,  'system',  'Initialising secure channel...'],
+    [600,  'system',  'Authenticating analyst credentials...          [ OK ]'],
+    [900,  'system',  'Establishing encrypted tunnel...               [ OK ]'],
+    [1200, 'system',  'Loading mission parameters...                  [ OK ]'],
+    [1600, 'blank',   ''],
+    [1700, 'alert',   '▶▶  INCOMING TRANSMISSION  ◀◀'],
+    [2000, 'blank',   ''],
+    [2100, 'amber',   `INCIDENT REF : ${missionId}`],
+    [2250, 'amber',   `WEEK         : ${weekNum}`],
+    [2400, 'amber',   `CLASSIFICATION: ${classification}`],
+    [2600, 'divider', '─────────────────────────────────────────────────────'],
+    [2800, 'blank',   ''],
+  ];
+
+  let t = 3000;
+  for (const line of missionLines) {
+    const cls = line.startsWith('##') ? 'bright'
+              : line.startsWith('>') ? 'indent'
+              : line === '' ? 'blank'
+              : 'prompt';
+    const text = line.replace(/^##\s*/, '').replace(/^>\s*/, '');
+    script.push([t, cls, text]);
+    // typing time: ~22ms per char, min 60ms, max 800ms
+    t += Math.min(800, Math.max(60, text.length * 22));
+  }
+
+  script.push([t + 100, 'blank', '']);
+  script.push([t + 200, 'divider', '─────────────────────────────────────────────────────']);
+  script.push([t + 400, 'system', 'END OF TRANSMISSION']);
+  script.push([t + 600, 'DONE', '']);
+
+  return script;
+}
+
+// ── Typewriter engine ──────────────────────────────────
+const output   = document.getElementById('output');
+const procWrap = document.getElementById('proceed-wrap');
+let   cursorEl = null;
+let   allTimers = [];
+let   scriptDone = false;
+
+function addLine(cls, text) {
+  if (cursorEl) cursorEl.remove();
+
+  const span = document.createElement('span');
+  span.className = 'line ' + cls;
+
+  if (cls === 'DONE') {
+    showProceed();
+    return;
+  }
+
+  // Type out character by character for prompt lines, instant for others
+  if (cls === 'prompt' || cls === 'bright' || cls === 'indent') {
+    typeText(span, text, () => addBlinkingCursor(span));
+  } else {
+    span.textContent = text;
+    addBlinkingCursor(span);
+  }
+
+  output.appendChild(span);
+  output.scrollTop = output.scrollHeight;
+}
+
+function typeText(el, text, done) {
+  let i = 0;
+  const speed = 28;
+  function next() {
+    if (i < text.length) {
+      el.textContent += text[i++];
+      output.scrollTop = output.scrollHeight;
+      const t = setTimeout(next, speed + (Math.random() * 20));
+      allTimers.push(t);
+    } else {
+      done && done();
+    }
+  }
+  next();
+}
+
+function addBlinkingCursor(el) {
+  cursorEl = document.createElement('span');
+  cursorEl.className = 'cursor';
+  el.appendChild(cursorEl);
+}
+
+function showProceed() {
+  if (cursorEl) cursorEl.remove();
+  scriptDone = true;
+  procWrap.classList.add('visible');
+}
+
+// ── Run the script ─────────────────────────────────────
+function runScript() {
+  const script = buildScript();
+  for (const [delay, cls, text] of script) {
+    const t = setTimeout(() => addLine(cls, text), delay);
+    allTimers.push(t);
+  }
+}
+
+// ── Skip ───────────────────────────────────────────────
+function skipToEnd() {
+  allTimers.forEach(clearTimeout);
+  allTimers = [];
+  output.innerHTML = '';
+  cursorEl = null;
+
+  const script = buildScript();
+  for (const [, cls, text] of script) {
+    if (cls === 'DONE') { showProceed(); break; }
+    const span = document.createElement('span');
+    span.className = 'line ' + cls;
+    span.textContent = text;
+    output.appendChild(span);
+  }
+  output.scrollTop = output.scrollHeight;
+}
+
+// ── Proceed ────────────────────────────────────────────
+function proceed() {
+  if (labUrl && labUrl !== '#') {
+    window.location.href = labUrl;
+  }
+}
+
+// ── Keyboard shortcuts ─────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && scriptDone) proceed();
+  if (e.key === ' ' && !scriptDone) skipToEnd();
+  if (e.key === 'Escape') skipToEnd();
+});
+
+// ── Go ─────────────────────────────────────────────────
+runScript();
+</script>
+</body>
+</html>

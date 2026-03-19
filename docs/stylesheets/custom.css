@@ -1,0 +1,255 @@
+/* ============================================
+   REDBACK SYSTEMS // CYBER COURSE THEME
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Fira+Code:wght@400;600&family=Orbitron:wght@700;900&display=swap');
+
+:root {
+  --rs-red: #e63946;
+  --rs-orange: #ff6b35;
+  --rs-green: #39ff14;
+  --rs-dim-green: #1a7a0a;
+  --rs-dark: #0a0a0a;
+  --rs-panel: #111218;
+  --rs-border: #2a2a3a;
+  --rs-text: #c8d6e0;
+  --rs-glow: 0 0 8px rgba(230, 57, 70, 0.5);
+}
+
+/* ---- SITE HEADER ---- */
+.md-header {
+  background: #0d0d0d !important;
+  border-bottom: 2px solid var(--rs-red);
+  box-shadow: 0 2px 20px rgba(230, 57, 70, 0.3);
+}
+
+.md-header__title {
+  font-family: 'Orbitron', monospace !important;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  color: var(--rs-red) !important;
+  text-transform: uppercase;
+}
+
+/* ---- NAVIGATION ---- */
+.md-nav__title {
+  font-family: 'Orbitron', monospace !important;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  color: var(--rs-red) !important;
+  text-transform: uppercase;
+}
+
+.md-nav__item--active > .md-nav__link {
+  color: var(--rs-red) !important;
+  font-weight: 600;
+}
+
+/* ---- CONTENT AREA ---- */
+.md-content {
+  background: var(--rs-dark);
+}
+
+.md-typeset h1 {
+  font-family: 'Orbitron', monospace !important;
+  font-weight: 900;
+  color: var(--rs-red) !important;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-bottom: 2px solid var(--rs-red);
+  padding-bottom: 0.5rem;
+  text-shadow: var(--rs-glow);
+}
+
+.md-typeset h2 {
+  font-family: 'Orbitron', monospace !important;
+  font-weight: 700;
+  color: var(--rs-orange) !important;
+  letter-spacing: 0.05em;
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+
+.md-typeset h3 {
+  font-family: 'Share Tech Mono', monospace;
+  color: var(--rs-text) !important;
+  font-size: 0.95rem;
+}
+
+/* Monospace everything for that terminal feel */
+.md-typeset p,
+.md-typeset li,
+.md-typeset td {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.88rem;
+  line-height: 1.8;
+  color: var(--rs-text);
+}
+
+/* ---- CODE BLOCKS ---- */
+.md-typeset pre {
+  background: #050505 !important;
+  border: 1px solid var(--rs-dim-green);
+  border-left: 4px solid var(--rs-green);
+  box-shadow: 0 0 12px rgba(57, 255, 20, 0.1);
+}
+
+.md-typeset code {
+  background: #0d1a0d;
+  color: var(--rs-green) !important;
+  border: 1px solid var(--rs-dim-green);
+  font-family: 'Fira Code', monospace;
+}
+
+/* ---- ADMONITIONS — MISSION STYLE ---- */
+/* Danger = CRITICAL ALERT */
+.md-typeset .admonition.danger,
+.md-typeset details.danger {
+  border-color: var(--rs-red);
+  background: rgba(230, 57, 70, 0.08);
+}
+.md-typeset .danger > .admonition-title,
+.md-typeset .danger > summary {
+  background: rgba(230, 57, 70, 0.2);
+  color: var(--rs-red) !important;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Warning = CAUTION */
+.md-typeset .admonition.warning,
+.md-typeset details.warning {
+  border-color: var(--rs-orange);
+  background: rgba(255, 107, 53, 0.08);
+}
+
+/* Note = BRIEFING */
+.md-typeset .admonition.note,
+.md-typeset details.note {
+  border-color: #4a9eff;
+  background: rgba(74, 158, 255, 0.06);
+}
+.md-typeset .note > .admonition-title,
+.md-typeset .note > summary {
+  background: rgba(74, 158, 255, 0.15);
+  font-family: 'Orbitron', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Success = MISSION COMPLETE */
+.md-typeset .admonition.success,
+.md-typeset details.success {
+  border-color: var(--rs-green);
+  background: rgba(57, 255, 20, 0.05);
+}
+.md-typeset .success > .admonition-title,
+.md-typeset .success > summary {
+  background: rgba(57, 255, 20, 0.12);
+  color: var(--rs-green) !important;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Example = LAB */
+.md-typeset .admonition.example,
+.md-typeset details.example {
+  border-color: #b44fff;
+  background: rgba(180, 79, 255, 0.06);
+}
+.md-typeset .example > .admonition-title,
+.md-typeset .example > summary {
+  background: rgba(180, 79, 255, 0.15);
+  font-family: 'Orbitron', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ---- TABLES ---- */
+.md-typeset table:not([class]) {
+  border: 1px solid var(--rs-border);
+}
+
+.md-typeset table:not([class]) th {
+  background: rgba(230, 57, 70, 0.15);
+  font-family: 'Orbitron', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--rs-red) !important;
+}
+
+.md-typeset table:not([class]) tr:hover {
+  background: rgba(230, 57, 70, 0.05);
+}
+
+/* ---- SCANLINE OVERLAY (subtle) ---- */
+.md-main::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.03) 2px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ---- SESSION HEADER BADGE ---- */
+.session-meta {
+  display: flex;
+  gap: 1rem;
+  margin: 1rem 0 2rem 0;
+  flex-wrap: wrap;
+}
+
+.session-meta span {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.8rem;
+  border: 1px solid var(--rs-border);
+  background: var(--rs-panel);
+  color: var(--rs-orange);
+}
+
+/* ---- TASK CHECKLIST ---- */
+.md-typeset .task-list-item {
+  font-family: 'Share Tech Mono', monospace;
+}
+
+/* ---- FOOTER ---- */
+.md-footer {
+  background: #0d0d0d;
+  border-top: 1px solid var(--rs-red);
+}
+
+/* ---- SEARCH ---- */
+.md-search__input {
+  font-family: 'Share Tech Mono', monospace;
+}
+
+/* ---- TABS ---- */
+.md-tabs {
+  background: #0d0d0d !important;
+  border-bottom: 1px solid var(--rs-border);
+}
+
+.md-tabs__link--active {
+  color: var(--rs-red) !important;
+  border-bottom: 2px solid var(--rs-red);
+}
