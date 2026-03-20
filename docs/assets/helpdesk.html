@@ -367,7 +367,7 @@
 
 <div class="messages" id="messages">
     <div class="message customer">
-        <div class="message-label">client / sarah.chen@redbacksystems.com</div>
+        <div class="message-label">client / <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="52213320333a7c313a373c1220373630333139212b2126373f217c313d3f">[email&#160;protected]</a></div>
         <div class="message-content" id="opening-message">
             Hi, I'm having trouble with the printer on the 3rd floor. It's not working at all!
         </div>
@@ -413,9 +413,10 @@
     </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     /* ---- CONFIG ---- */
-    const API_KEY = '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';
+    // API key should be set via environment variable or configured separately
+    const API_KEY = '';
     const MODEL   = 'llama-3.1-8b-instant';
     const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
@@ -648,16 +649,4 @@ Be honest. A perfect 5 is rare. Average good service = 3-4. Poor service = 0-2.`
     input.addEventListener('keydown', e => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            sendMessage();
-        }
-    });
-
-    input.addEventListener('input', () => {
-        input.style.height = 'auto';
-        input.style.height = Math.min(input.scrollHeight, 100) + 'px';
-    });
-
-    input.focus();
-</script>
-</body>
-</html>
+            
