@@ -16,7 +16,7 @@
     The files look unchanged. The hashes say otherwise.
     Today you learn both sides: how to hide data, and how to prove a file has been modified.
 
-[📊 View Slides](../slides/){.md-button .md-button--primary}
+[📊 View Slides](../../slides/){.md-button .md-button--primary}
 
 ---
 
