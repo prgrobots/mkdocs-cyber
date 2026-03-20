@@ -1,5 +1,7 @@
 #!/bin/bash
-# Deploy script: build everything, then deploy to gh-pages
+# Deploy script: build everything then push to gh-pages
+
+set -e
 
 echo "📚 Building MkDocs..."
 mkdocs build
@@ -9,13 +11,20 @@ cd slides
 npm run build
 cd ..
 
-echo "🚀 Deploying to GitHub Pages..."
-mkdocs gh-deploy --no-history
+echo "✅ Both MkDocs and Slidev built successfully"
+echo ""
+echo "📁 Site structure:"
+ls -la site/ | grep -E "^d|index.html"
+echo ""
 
-# Rebuild slides after gh-deploy (which cleans the site directory)
-echo "📊 Rebuilding Slidev slides for deployment..."
-cd slides
-npm run build
+echo "🚀 Deploying to gh-pages branch..."
+# Add all changes
+git add -A
+git commit -m "Build site and slides" --allow-empty
+
+# Use git subtree to push site folder to gh-pages
+git subtree push --prefix site origin gh-pages
 
 echo "✅ Deployment complete!"
-echo "📈 Site should be live at: https://prgrobots.github.io/mkdocs-cyber/"
+echo "📈 Site available at: https://prgrobots.github.io/mkdocs-cyber/"
+echo "📊 Slides available at: https://prgrobots.github.io/mkdocs-cyber/slides/"
