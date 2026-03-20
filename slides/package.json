@@ -3,8 +3,8 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "slidev build --out ../site/slides",
-    "dev": "slidev --open",
+    "build": "for f in week-*.md; do week=${f%.md}; slidev build $f --out ../site/slides/$week --base /mkdocs-cyber/slides/$week/; done",
+    "dev": "slidev week-07.md --open",
     "export": "slidev export"
   },
   "dependencies": {

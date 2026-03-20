@@ -1,173 +1,220 @@
-# Week 7 — ParrotOS, Steganography & Hashing
+# Week 7 — Steganography, Hashing & Malware Scanning
 
 <div class="session-meta">
   <span>📅 Week 7</span>
   <span>⏱ 2 Hours</span>
-  <span>🔵 Phase 1 — Reconnaissance</span>
-  <span>📋 ICTICT213 · ICTSAS214</span>
+  <span>🔵 Lab — Parrot OS (bare metal)</span>
+  <span>📋 ICTSAS214</span>
 </div>
 
 ---
 
 !!! danger "MISSION BRIEF"
     **Incident Reference:** RBS-2025-007  
-    Intelligence suggests a Redback Systems insider may be exfiltrating data by
-    hiding it inside ordinary image files — a technique called steganography.
-    The files look unchanged. The hashes say otherwise.
-    Today you learn both sides: how to hide data, and how to prove a file has been modified.
+    A Redback Systems staff member received an image file via email from an unknown
+    sender. It looks like a normal photo. Your job: prove whether the file has been
+    tampered with, scan it for malware, and find out whether your antivirus would
+    even catch something hidden inside it.
 
-[📊 View Slides](../../slides/){.md-button .md-button--primary}
-
----
-
-## Learning Objectives
-
-- [ ] Navigate ParrotOS and key security tools
-- [ ] Use steghide to embed and extract hidden data
-- [ ] Generate and verify file hashes (MD5, SHA256)
-- [ ] Explain why a matching filename and size does not mean an unchanged file
-- [ ] Connect steganography detection to data integrity concepts
+[📊 View Slides](/mkdocs-cyber/slides/week-07/){.md-button .md-button--primary}
 
 ---
 
-## 1. ParrotOS — Your Platform
+## Today's Plan
 
-Parrot Security OS is a Debian-based Linux distribution built for security work.
+1. **Dongles in** — install ClamAV + test files, run freshclam (~10 min)
+2. **Dongles out** — air-gapped for the rest
+3. Steganography hands-on — hide a file, prove it changed the hash
+4. ClamAV baseline scan
+5. EICAR — scan the test file that came with the install
+6. Hide EICAR inside an image — does ClamAV catch it?
+7. VirusTotal demo — name vs hash
+
+---
+
+## Part 1 — ClamAV Install & Update (dongles in)
+
+Plug in your dongle. About 10 minutes for this part.
 
 ```bash
-# Key tools already installed:
-aircrack-ng    # WiFi security (Week 8)
-wireshark      # Packet analysis (Week 9)
-hashcat        # Password cracking (Week 10)
-metasploit     # Exploitation framework (Week 11)
-steghide       # Steganography
-nmap           # Network scanning
-set            # Social Engineering Toolkit (Week 14)
+# Install ClamAV and the test files package
+sudo apt update && sudo apt install clamav clamav-daemon clamav-testfiles -y
+
+# Update virus definitions
+sudo freshclam
+
+# When done you'll see: main.cvd is up to date
 ```
 
-Get comfortable with the terminal now. Everything from Week 8 onwards happens here.
+!!! note "clamav-testfiles"
+    This package installs test files to `/usr/share/clamav-testfiles/` — including
+    EICAR. You didn't have to create it. It came with the install. We'll use it shortly.
+
+**Dongles out once freshclam completes.**
 
 ---
 
-## 2. File Hashing — Proving Integrity
+## Part 2 — Steganography & Hashing
 
-A hash is a mathematical fingerprint of a file. The same file always produces the same hash. Change one byte, the hash completely changes.
-
-```bash
-# Generate SHA256 hash of a file
-sha256sum image.jpg
-
-# Output:
-# a3f4c8d2e1b9... image.jpg
-
-# MD5 (faster, weaker — don't use for security, fine for integrity checks)
-md5sum image.jpg
-
-# Verify a file against a known hash
-echo "a3f4c8d2e1b9...  image.jpg" | sha256sum --check
-```
-
-### Why this matters
-
-When you receive evidence, you hash it immediately. If anyone questions whether you modified it, you can prove the hash matches. This is chain of custody for digital evidence.
-
----
-
-## 3. Steganography with steghide
-
-Steganography = hiding data inside other data. A JPEG file has enough redundant information to hide a text file without visibly changing the image.
+Last week you saw how to hide data inside an image. Today you prove mathematically
+that the file was modified — even though it looks identical.
 
 ```bash
-# Embed a secret file inside an image
-steghide embed -cf cover_image.jpg -sf secret.txt -p "password123"
-
-# The output image.jpg looks identical to the original
-# File size changes slightly — this is detectable
-
-# Extract hidden data
-steghide extract -sf image.jpg -p "password123"
-
-# Check if a file contains hidden data (without password)
-steghide info image.jpg
-```
-
-### The detection problem
-
-```bash
-# Before embedding:
+# Hash your original image
 sha256sum original.jpg
-# b7e2a1c4f8d3...  original.jpg
 
-# After embedding:
-sha256sum modified.jpg  
-# 9f3c7a2e1b4d...  modified.jpg   ← DIFFERENT HASH
+# Embed a secret file inside it
+steghide embed -cf original.jpg -sf secret.txt -p "redback2025"
 
-# File size:
-ls -la original.jpg modified.jpg
-# -rw-r--r-- 1 user user 148392 original.jpg
-# -rw-r--r-- 1 user user 152847 modified.jpg  ← slightly larger
+# Hash it again
+sha256sum original.jpg
 ```
 
-The file looks the same. The filename is the same. But the hash never lies.
-
-!!! note "CONNECTING TO THE MORNING CLASS"
-    This is exactly what BSBXCS303 covers — data integrity, detecting unauthorised 
-    modification, and protecting information. The hash IS the integrity check.
-    A file that has been steganographically modified has failed its integrity check.
-
----
-
-## 4. Detection Techniques
+The hashes are completely different. The image looks the same. The hash doesn't lie.
 
 ```bash
-# stegdetect — statistical analysis for hidden content
-stegdetect -t jopi image.jpg
-
-# binwalk — look for embedded files of any type
-binwalk image.jpg
-
-# exiftool — check metadata anomalies
-exiftool image.jpg
+# This works for any file change — even one byte
+echo "original" > test.txt && sha256sum test.txt
+echo "changed"  >> test.txt && sha256sum test.txt
+# Completely different hash from one added word
 ```
+
+!!! note "Why hashing matters"
+    This is how digital forensics maintains chain of custody. Hash the evidence
+    when you collect it. If anyone questions whether you modified it —
+    the hash proves you didn't.
 
 ---
 
-## Lab Task
+## Part 3 — ClamAV: Clean Baseline Scan
 
-!!! example "TASK 7.1 — Steganography Lab"
+```bash
+# Scan your home directory
+clamscan -r /home/
 
-    **Part A — Hide data:**
-    
-    ```bash
-    # 1. Create a secret message
-    echo "Redback Systems Confidential: Q3 Revenue = $4.2M" > secret.txt
-    
-    # 2. Get a cover image (any JPEG)
-    # Ask your lecturer for the lab image pack
-    
-    # 3. Embed the secret
-    steghide embed -cf cover.jpg -sf secret.txt -p "redback2025"
-    
-    # 4. Hash BOTH files and record the hashes
-    sha256sum cover.jpg
-    sha256sum cover.jpg  # after embedding — rename first
-    ```
-    
-    **Part B — Detect and extract:**
-    
-    Your lecturer will give you a folder of images. Some contain hidden data, some don't.
-    
-    - [ ] Hash all images and record hashes
-    - [ ] Use steghide info to probe each file
-    - [ ] For any that contain data: extract it
-    - [ ] Document which files were modified and how you know
-    
-    **Part C — Write up:**
-    
-    Brief paragraph: "How would Redback Systems detect an insider using steganography 
-    to exfiltrate data?" Max 150 words. Plain English.
-    
-    Submit all hash records + written paragraph to AT1 portfolio.
+# -r = recursive — scans all subdirectories
+# Look for this at the end:
+# Infected files: 0
+```
+
+Screenshot the summary. This is your clean baseline.
+
+---
+
+## Part 4 — Scan the EICAR Test File
+
+EICAR is an industry-standard test file. Completely harmless — just a text string —
+but every antivirus on earth is trained to detect it.
+It came with the `clamav-testfiles` package.
+
+```bash
+# See what test files you have
+ls /usr/share/clamav-testfiles/
+
+# Scan them
+clamscan /usr/share/clamav-testfiles/
+
+# Output will include:
+# clam.exe: Clamav.Test.File-6 FOUND
+# Infected files: 1
+```
+
+Screenshot the output showing `FOUND` with the signature name visible.
+
+---
+
+## Part 5 — Hide EICAR Inside an Image
+
+You've seen ClamAV detect EICAR directly. Now hide it inside a JPEG and see
+if ClamAV still catches it.
+
+```bash
+# Copy EICAR to work with
+cp /usr/share/clamav-testfiles/clam.exe /tmp/eicar-test.exe
+
+# Hide it inside your image
+steghide embed -cf original.jpg -sf /tmp/eicar-test.exe -p "redback2025"
+
+# Scan the image
+clamscan original.jpg
+```
+
+**Write down your prediction before running the scan.**
+
+```
+# Almost certainly what you'll see:
+# Infected files: 0   ← ClamAV missed it
+```
+
+Now extract it back out and scan:
+
+```bash
+steghide extract -sf original.jpg -p "redback2025"
+clamscan eicar-test.exe
+# Infected files: 1   ← found immediately
+```
+
+Same content. Two completely different results.
+
+---
+
+## Part 6 — VirusTotal: Name vs Hash (lecturer demo)
+
+Look at the ClamAV output — it called the file `Clamav.Test.File-6`.
+Every AV vendor names the same file differently:
+
+| Vendor | Name |
+|--------|------|
+| ClamAV | `Clamav.Test.File-6` |
+| Kaspersky | `EICAR-Test-File` |
+| Sophos | `Eicar_test_file` |
+| Malwarebytes | `Trojan.Eicar` |
+| Windows Defender | `Virus:DOS/EICAR_Test_File` |
+
+All different names. Same SHA256 hash:
+```
+275a021bbfb6489e54d471899f7db9d1663fc695ec2fe2a2c4538aabf651fd0f
+```
+
+Search that hash on [virustotal.com](https://virustotal.com) — 70+ detections, 70+ different names.
+
+**The name is just a label. The hash is the identity.**
+
+Renaming `eicar.exe` → `invoice.pdf` doesn't change the hash — AV still detects it.
+Modifying even one byte → new hash → AV misses it entirely. This is how malware
+authors evade detection.
+
+!!! warning "ClamAV missed the hidden EICAR — and that's the point"
+    ClamAV uses signature-based detection — it looks for known byte patterns.
+    When steghide embeds EICAR inside a JPEG, those patterns are fragmented and
+    scattered across the image data. ClamAV scans the file and sees a JPEG.
+
+    This is not a bug. It is a fundamental limitation of all signature-based AV.
+    AV is one layer of defence — not the whole answer.
+
+---
+
+## Lab Task — AT1 Evidence
+
+!!! example "TASK 7.1 — Document Your Findings"
+
+    **Screenshots required:**
+
+    - [ ] `freshclam` — definitions updated
+    - [ ] Hash of original image vs stego-modified — different hashes
+    - [ ] ClamAV clean scan — `Infected files: 0`
+    - [ ] ClamAV scan of EICAR — `FOUND` with signature name
+    - [ ] ClamAV scan of image with hidden EICAR — result
+    - [ ] ClamAV scan of extracted EICAR — `FOUND`
+    - [ ] VirusTotal results (lecturer screen ok)
+
+    **Written answers (2-3 sentences each):**
+
+    1. What is a hash and why can't you tell by looking if a file was modified?
+    2. ClamAV missed EICAR hidden in the image but found it immediately when extracted. Why?
+    3. What does this tell you about relying on AV as your only security control?
+
+    Submit to AT1 portfolio.
 
 ---
 
@@ -177,13 +224,8 @@ exiftool image.jpg
 
     | Activity | Unit | Element |
     |----------|------|---------|
-    | File hashing | ICTICT213 | 1.4, 2.3 |
-    | Steganography tools | ICTICT213 | 2.2, 2.3 |
-    | Data integrity concepts | ICTSAS214 | 1.1, 1.2 |
-
----
-
-## Resources
-
-- [steghide documentation](http://steghide.sourceforge.net/documentation.php)
-- [ACSC — Detecting Data Exfiltration](https://www.cyber.gov.au)
+    | Steganography + hashing | ICTSAS214 | 1.1, 1.2, 1.3 |
+    | ClamAV install and update | ICTSAS214 | 2.1, 2.2 |
+    | Baseline scan | ICTSAS214 | 2.3, 2.4 |
+    | EICAR detection | ICTSAS214 | 2.5, 3.1 |
+    | Steghide evasion + VirusTotal | ICTSAS214 | 3.1, 3.2 |
