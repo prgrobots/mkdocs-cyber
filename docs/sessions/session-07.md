@@ -16,6 +16,8 @@
     The files look unchanged. The hashes say otherwise.
     Today you learn both sides: how to hide data, and how to prove a file has been modified.
 
+[📊 View Slides](https://prgrobots.github.io/mkdocs-cyber/slides/week-07.html){.md-button .md-button--primary}
+
 ---
 
 ## Learning Objectives
