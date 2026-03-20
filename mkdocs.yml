@@ -14,52 +14,34 @@ copyright: "Copyright &copy; 2025 North Metropolitan TAFE. CLASSIFIED: TRAINING 
 
 theme:
   name: material
-  logo: assets/images/redback-logo.png
-  favicon: assets/images/redback-favicon.png
   features:
     - navigation.tabs
+    - navigation.tabs.sticky
     - navigation.sections
-    - navigation.expand
     - navigation.path
     - navigation.top
-    - toc.integrate
+    - navigation.indexes
+    - toc.follow
     - search.highlight
-    - search.share
+    - search.suggest
     - content.code.copy
     - content.code.annotate
   palette:
-    # Dark mode (default - cyber aesthetic)
     - scheme: slate
       primary: red
-      accent: deep-orange
+      accent: orange
       toggle:
-        icon: material/lock
+        icon: material/weather-sunny
         name: Switch to light mode
-    # Light mode
     - scheme: default
       primary: red
       accent: deep-orange
       toggle:
-        icon: material/lock-open
+        icon: material/weather-night
         name: Switch to dark mode
   font:
-    text: Share Tech Mono
-    code: Fira Code
-  icon:
-    repo: fontawesome/brands/github
-    admonition:
-      note: octicons/terminal-16
-      abstract: octicons/checklist-16
-      info: octicons/info-16
-      tip: octicons/light-bulb-16
-      success: octicons/check-16
-      question: octicons/question-16
-      warning: octicons/alert-16
-      failure: octicons/x-circle-16
-      danger: octicons/flame-16
-      bug: octicons/bug-16
-      example: octicons/beaker-16
-      quote: octicons/quote-16
+    text: Inter
+    code: JetBrains Mono
 
 plugins:
   - search:
@@ -115,41 +97,37 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - Situation Report: course-overview/sitrep.md
+  - Course Guide: course-overview/sitrep.md
+  - Assessments: assessments/overview.md
 
-  - "PHASE 1 — Reconnaissance (Weeks 1-7)":
-    - Week 1 - OS Fundamentals & Threat Landscape: sessions/session-01.md
-    - Week 2 - OS Deep Dive: sessions/session-02.md
-    - Week 3 - Hardware & Physical Security: sessions/session-03.md
-    - Week 4 - Forensic Recovery (PC Teardown): sessions/session-04.md
-    - Week 5 - Hardened OS Build: sessions/session-05.md
-    - Week 6 - Virtualisation & Isolated Environments: sessions/session-06.md
-    - Week 7 - ParrotOS & Steganography Lab: sessions/session-07.md
+  - "Weeks 1–7: Foundations":
+    - Week 1 — OS & Threat Landscape: sessions/session-01.md
+    - Week 2 — OS Deep Dive: sessions/session-02.md
+    - Week 3 — Hardware & Physical Security: sessions/session-03.md
+    - Week 4 — PC Teardown (Forensic): sessions/session-04.md
+    - Week 5 — Hardened OS Build: sessions/session-05.md
+    - Week 6 — Virtual Machines: sessions/session-06.md
+    - Week 7 — Parrot OS & Steganography: sessions/session-07.md
 
-  - "PHASE 2 — Active Threat (Weeks 8-11)":
-    - Week 8 - WiFi Attack Lab (Evil Twin): sessions/session-08.md
-    - Week 9 - Wireshark & Traffic Analysis: sessions/session-09.md
-    - Week 10 - Password Cracking Lab: sessions/session-10.md
-    - Week 11 - Metasploitable & Exploitation: sessions/session-11.md
+  - "Weeks 8–11: Attack Labs":
+    - Week 8 — WiFi Evil Twin: sessions/session-08.md
+    - Week 9 — Wireshark & Traffic Analysis: sessions/session-09.md
+    - Week 10 — Password Cracking: sessions/session-10.md
+    - Week 11 — Exploitation (Metasploitable): sessions/session-11.md
 
-  - "PHASE 3 — Incident Response (Weeks 12-15)":
-    - Week 12 - IDS with Snort: sessions/session-12.md
-    - Week 13 - SOC Exercise — PCAP Replay: sessions/session-13.md
-    - Week 14 - Phishing Kit Lab: sessions/session-14.md
-    - Week 15 - Client Advisory & Documentation: sessions/session-15.md
+  - "Weeks 12–15: Incident Response":
+    - Week 12 — IDS with Snort: sessions/session-12.md
+    - Week 13 — SOC PCAP Exercise: sessions/session-13.md
+    - Week 14 — Phishing Lab: sessions/session-14.md
+    - Week 15 — Client Documentation: sessions/session-15.md
 
-  - "PHASE 4 — Debrief (Weeks 16-18)":
-    - Week 16 - Helpdesk Roleplay & Incident Reports: sessions/session-16.md
-    - Week 17 - One-on-One Support & Feedback: sessions/session-17.md
-    - Week 18 - Portfolio Submission & AAR: sessions/session-18.md
-
-  - Assessments:
-    - Overview: assessments/overview.md
-    - Practical Portfolio (AT1): assessments/at1-portfolio.md
-    - Knowledge Tests: assessments/knowledge-tests.md
+  - "Weeks 16–18: Wrap Up":
+    - Week 16 — Helpdesk Roleplay: sessions/session-16.md
+    - Week 17 — One-on-One Support: sessions/session-17.md
+    - Week 18 — Portfolio & Final Test: sessions/session-18.md
 
   - Resources:
-    - Tools & References: resources/tools.md
+    - Tools & Commands: resources/tools.md
     - Redback Systems Intranet: resources/intranet.md
     - Glossary: resources/glossary.md
 

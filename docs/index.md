@@ -1,86 +1,53 @@
-# REDBACK SYSTEMS // SOC Training Program
+# Cert III Cyber Security — ICT Support Cluster
 
-<div class="session-meta">
-  <span>🔴 ACTIVE</span>
-  <span>📋 CERT III CYBER SECURITY</span>
-  <span>📍 NORTH METROPOLITAN TAFE</span>
-</div>
+**North Metropolitan TAFE &nbsp;·&nbsp; Afternoon Session**
+
+This site is your lab guide and reference for the afternoon cluster. Everything you need is here — session instructions, assessment tasks, tools, and the fictional company scenario that ties it together.
 
 ---
 
-```
-██████╗ ███████╗██████╗ ██████╗  █████╗  ██████╗██╗  ██╗
-██╔══██╗██╔════╝██╔══██╗██╔══██╗██╔══██╗██╔════╝██║ ██╔╝
-██████╔╝█████╗  ██║  ██║██████╔╝███████║██║     █████╔╝ 
-██╔══██╗██╔══╝  ██║  ██║██╔══██╗██╔══██║██║     ██╔═██╗ 
-██║  ██║███████╗██████╔╝██████╔╝██║  ██║╚██████╗██║  ██╗
-╚═╝  ╚═╝╚══════╝╚═════╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
-███████╗██╗   ██╗███████╗████████╗███████╗███╗   ███╗███████╗
-██╔════╝╚██╗ ██╔╝██╔════╝╚══██╔══╝██╔════╝████╗ ████║██╔════╝
-███████╗ ╚████╔╝ ███████╗   ██║   █████╗  ██╔████╔██║███████╗
-╚════██║  ╚██╔╝  ╚════██║   ██║   ██╔══╝  ██║╚██╔╝██║╚════██║
-███████║   ██║   ███████║   ██║   ███████╗██║ ╚═╝ ██║███████║
-```
+## Where to start
+
+If it's the start of term, read the [Course Guide](course-overview/sitrep.md) first. It explains the scenario, the assessment tasks, and what tools you'll use.
+
+If you're looking for today's session, use the navigation on the left — sessions are listed by week number.
+
+If you need to check what's in your portfolio, go to [Assessments](assessments/overview.md).
 
 ---
 
-## Welcome to the SOC
+## Your units
 
-You have been assigned to the **Redback Systems Security Operations Centre** as a junior analyst. 
-
-Redback Systems is a mid-sized Australian tech company that has been experiencing a wave of security incidents. Someone has been probing the network. A staff member clicked a phishing link. A laptop came back from a conference behaving strangely.
-
-**Your job is to figure out what happened — and fix it.**
-
-Over the next 18 weeks you will build the skills to do exactly that. You will learn by doing: running real attacks in isolated lab environments, writing real incident reports, and advising real (pretend) clients in plain language.
-
-!!! danger "THIS IS NOT A TEXTBOOK COURSE"
-    You will break things. You will get things wrong. You will have to document your failures
-    as well as your successes — because that's what a real SOC analyst does.
+| Code | Title | Weeks |
+|------|-------|-------|
+| ICTICT213 | Operate application software packages | 1–8 |
+| ICTSAS214 | Protect devices from malware | 9–12 |
+| ICTSAS305 | Provide ICT advice to clients | 11–18 |
 
 ---
 
-## Your Units
+## Assessments at a glance
 
-This course covers three units of competency delivered together as a cluster:
-
-| Code | Unit | When |
-|------|------|------|
-| ICTICT213 | Operate application software packages | Weeks 1–8 |
-| ICTSAS214 | Protect devices from malware | Weeks 9–10 |
-| ICTSAS305 | Provide ICT advice to clients | Weeks 11–18 |
-
----
-
-## The Mission Arc
-
-```mermaid
-graph LR
-    A[Phase 1\nReconnaissance\nWeeks 1-7] --> B[Phase 2\nActive Threat\nWeeks 8-11]
-    B --> C[Phase 3\nIncident Response\nWeeks 12-15]
-    C --> D[Phase 4\nDebrief\nWeeks 16-18]
-    style A fill:#1a1a2e,stroke:#4a9eff,color:#4a9eff
-    style B fill:#1a0000,stroke:#e63946,color:#e63946
-    style C fill:#1a0d00,stroke:#ff6b35,color:#ff6b35
-    style D fill:#0a1a0a,stroke:#39ff14,color:#39ff14
-```
+| # | What | Due |
+|---|------|-----|
+| AT1 | Practical Portfolio — tasks built up each week | Week 18 |
+| AT2 | ICTICT213 Knowledge Test | Week 10 |
+| AT3 | ICTSAS214 Knowledge Test | Week 15 |
+| AT4 | ICTSAS305 Knowledge Test | Week 18 |
 
 ---
 
-## Assessments
+## The scenario
 
-| Assessment | Description | Due |
-|---|---|---|
-| AT1 — Practical Portfolio | Tasks completed throughout the course | Week 18 |
-| AT2 — ICTICT213 Knowledge Test | Short answer knowledge questions | Week 10 |
-| AT3 — ICTSAS214 Knowledge Test | Short answer knowledge questions | Week 15 |
-| AT4 — ICTSAS305 Knowledge Test | Short answer knowledge questions | Week 18 |
+You work at **Redback Systems**, a Perth-based tech company. Over 18 weeks, the company experiences a series of cyber incidents. Each week you respond to a new development — running investigations, fixing machines, and briefing staff. By Week 18 you've built a complete incident record and the skills to back it up.
 
-See [Assessment Overview](assessments/overview.md) for full details.
+It's the same work a junior SOC analyst or IT support technician does. The scenario makes it feel real. The labs make the skills stick.
 
 ---
 
-!!! note "ABOUT THIS SITE"
-    This site is your course guide, lab manual, and reference resource.
-    All lab instructions, assessment tasks, and resources live here.
-    Bookmark it. Check it before every session.
+## Quick links
+
+- [Week 8 — WiFi Evil Twin Lab](sessions/session-08.md) ← where we're up to
+- [Tools & Commands](resources/tools.md)
+- [Redback Systems Intranet + Incident Report Template](resources/intranet.md)
+- [Glossary](resources/glossary.md)
