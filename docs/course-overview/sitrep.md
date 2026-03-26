@@ -20,9 +20,9 @@ Over the past 18 weeks, Redback Systems experiences a series of incidents. Each 
 
 | Code | Title | Weeks |
 |------|-------|-------|
-| ICTICT213 | Operate application software packages | 1–8 |
-| ICTSAS214 | Protect devices from malware | 9–12 |
-| ICTSAS305 | Provide ICT advice to clients | 11–18 |
+| ICTICT213 | Use computer operating systems and hardware | 1–8 |
+| ICTSAS214 | Protect devices from spam and destructive software | 7–12 |
+| ICTSAS305 | Provide ICT advice to clients | 5, 8, 11–18 |
 
 ---
 

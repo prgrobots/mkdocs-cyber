@@ -98,6 +98,8 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Course Guide: course-overview/sitrep.md
+  - Learning & Assessment Plan: course-overview/lap.md
+  - Unit Mapping: course-overview/unit-mapping.md
   - Assessments: assessments/overview.md
 
   - "Weeks 1–7: Foundations":
@@ -110,7 +112,7 @@ nav:
     - Week 7 — Parrot OS & Steganography: sessions/session-07.md
 
   - "Weeks 8–11: Attack Labs":
-    - Week 8 — WiFi Evil Twin: sessions/session-08.md
+    - Week 8 — Rogue IoT Device: sessions/session-08.md
     - Week 9 — Wireshark & Traffic Analysis: sessions/session-09.md
     - Week 10 — Password Cracking: sessions/session-10.md
     - Week 11 — Exploitation (Metasploitable): sessions/session-11.md

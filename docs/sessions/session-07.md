@@ -133,10 +133,10 @@ if ClamAV still catches it.
 cp /usr/share/clamav-testfiles/clam.exe /tmp/eicar-test.exe
 
 # Hide it inside your image
-steghide embed -cf original.jpg -sf /tmp/eicar-test.exe -p "redback2025"
+steghide embed -cf original.jpg -ef /tmp/eicar-test.exe -p "redback2025" -sf output.jpg
 
 # Scan the image
-clamscan original.jpg
+clamscan output.jpg
 ```
 
 **Write down your prediction before running the scan.**
@@ -149,7 +149,7 @@ clamscan original.jpg
 Now extract it back out and scan:
 
 ```bash
-steghide extract -sf original.jpg -p "redback2025"
+steghide extract -sf output.jpg -p "redback2025"
 clamscan eicar-test.exe
 # Infected files: 1   ← found immediately
 ```

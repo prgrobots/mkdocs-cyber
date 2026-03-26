@@ -1,4 +1,4 @@
-# WEEK 8 — WiFi Attack Lab
+# WEEK 8 — Rogue IoT Device: WiFi Threat Analysis
 
 <div class="session-meta">
   <span>📅 Week 8</span>
@@ -13,11 +13,12 @@
     **Incident Reference:** RBS-2025-008  
     **Classification:** TRAINING — CONTROLLED LAB ENVIRONMENT ONLY  
     
-    Redback Systems management suspects an employee's laptop was compromised via a rogue
-    access point at a local café. Your team has been tasked with **replicating the attack
-    in a controlled lab** so you can understand the threat and advise staff.
+    A suspicious device was found plugged into a USB power point near the Redback Systems
+    reception desk. It appears to be a small circuit board — possibly disguised as a phone
+    charger. The IT team has recovered it and isolated it to the lab network.
 
-    Today you are the attacker. Next week, you write the advisory.
+    Your task: **find out what this device does, assess the risk to Redback Systems, and
+    advise IT management.**
 
 ---
 
@@ -25,224 +26,244 @@
 
 By the end of this session you will be able to:
 
-- [ ] Explain how a deauthentication attack works and why WPA2 allows it
-- [ ] Set up a rogue access point (evil twin) on an isolated lab network
-- [ ] Capture a client reconnect using your Parrot OS machine
-- [ ] Explain what an attacker could capture after a successful association
-- [ ] Document the attack as a support ticket (AT1 Task)
+- [ ] Explain what destructive firmware on an IoT device can do to a network
+- [ ] Describe how a deauthentication attack works and why WPA2 allows it
+- [ ] Observe a live demonstration of deauth and rogue AP attacks on the lab network
+- [ ] Analyse PCAP evidence to identify deauthentication frames and rogue AP beacons
+- [ ] Write an advisory memo to Redback Systems IT management
 
 ---
 
-## Background — Why This Works
+## Part 1 — What Is This Device? (25 min)
 
-Before you touch a keyboard, you need to understand the theory. If you can't explain the attack, you can't advise a client about it.
+### The Device
 
-### The Problem With 802.11 Deauthentication
+The recovered item is an **ESP8266 microcontroller** — a cheap, widely available WiFi-capable chip used in IoT products like smart plugs, sensors, and home automation devices. This one is running **deauther firmware**: open-source software that turns the chip into a WiFi attack tool.
 
-WiFi management frames — the packets that handle connecting, disconnecting, and roaming — are **not authenticated** in WPA2. This is not a bug someone forgot to fix. It was a deliberate design decision made in the 1990s that the industry has never fully walked back.
+This is destructive software running on a compromised device. It is not a theoretical threat — ESP8266 boards cost under $10 AUD and deauther firmware is freely available online.
 
-```
-Client ──── "I want to connect" ────────► Access Point
-Client ◄─── "You are connected" ────────  Access Point
-  
-Attacker ── "DEAUTH [spoofed from AP]" ─► Client
-Client ── "I was just disconnected?!" 
-Client ── [scans for networks]
-Client ── [finds "TAFE_WiFi" with stronger signal]
-Client ── "I want to connect" ────────► ATTACKER (not the real AP)
-```
-
-The client has no way to verify the deauth came from the real AP. WPA3 fixes this with Protected Management Frames (PMF), but WPA2 — which is everywhere — does not.
-
-!!! warning "Real World Impact"
-    This attack was used in [Operation: Fancy Bear (APT28)](https://www.ncsc.gov.uk) 
-    targeting hotel WiFi networks to compromise guest laptops.
-    It has been documented in multiple ACSC advisories.
+!!! warning "Real World"
+    Similar attacks have been documented in hotel networks targeted by the APT28 threat
+    group (Operation: Fancy Bear), and have appeared in ACSC advisories on WiFi-based
+    attacks against Australian businesses. A device like this could be left in a waiting
+    room, plugged into any standard USB charger port, and go unnoticed indefinitely.
 
 ---
 
-## Lab Setup
+### How the Firmware Works
 
-!!! example "LAB — Equipment & Topology"
+The deauther firmware exploits a fundamental weakness in the WPA2 WiFi standard.
 
-    **Your station has:**
-    
-    - Parrot OS machine (bare metal)
-    - USB WiFi dongle with monitor mode support
-    - Lab router (SSID: `REDBACK-LAB`) — this is your target
-    - **Air-gapped from internet — dongle only connects to lab router**
+**The problem:** WiFi management frames — the packets that handle connecting, disconnecting, and roaming between access points — are **not authenticated** in WPA2. This was a design decision from the 1990s that was never fully corrected.
 
-    **Network topology for today:**
+```mermaid
+sequenceDiagram
+    participant C as Your Laptop
+    participant AP as Real AP (REDBACK-LAB)
+    participant D as Rogue Device
 
-    ```
-    [Lab Router: REDBACK-LAB]
-           │
-           ├── Student PC (target client)
-           │
-           └── [Your Parrot box] ← attacker
-    ```
+    C->>AP: Association request
+    AP-->>C: Connected ✓
 
-    ⚠️ **The lab router is isolated. Do NOT connect the dongle to TAFE wifi.**  
-    Your lecturer will confirm the lab SSID before you start.
+    Note over D: Forges a deauth frame<br/>using the real AP's MAC address
+    D->>C: DEAUTH [spoofed from AP]
+    C->>C: Disconnected — scanning for networks...
+    Note over C: Sees "REDBACK-LAB" with stronger signal
+    C->>D: Association request
+    D-->>C: Connected ✓
+    Note over C,D: Client is on the rogue AP — no warning shown
+```
+
+The client has no way to verify the disconnect came from the real access point. It just obeys.
+
+**WPA3 fixes this** using Protected Management Frames (PMF / 802.11w), which cryptographically authenticate management frames. Most consumer and workplace hardware still runs WPA2.
 
 ---
 
-## Part 1 — Reconnaissance (30 min)
+### Discussion — Before We Watch the Demo
 
-### Step 1 — Put your dongle in monitor mode
+Take 5 minutes to discuss with the person next to you:
 
-```bash
-# Check your interface name first
-ip link show
-
-# Put it into monitor mode (replace wlan1 with your interface)
-sudo airmon-ng start wlan1
-
-# Verify monitor mode is active
-iwconfig
-# You should see wlan1mon (or similar)
-```
-
-!!! note "BRIEFING — What is monitor mode?"
-    Normal WiFi adapters only capture packets addressed to them.
-    Monitor mode tells the card to capture **everything** in range — 
-    management frames, data frames, beacons from every AP nearby.
-    This is passive. You are not transmitting anything yet.
-
-### Step 2 — Scan for targets
-
-```bash
-# Start airodump — scan all channels
-sudo airodump-ng wlan1mon
-```
-
-Find `REDBACK-LAB` in the output. Note down:
-
-| Field | What it means | Your value |
-|-------|--------------|------------|
-| BSSID | MAC address of the AP | |
-| CH | Channel | |
-| ESSID | Network name | REDBACK-LAB |
-
-```bash
-# Lock onto your target channel (replace XX and YY:YY...)
-sudo airodump-ng -c XX --bssid YY:YY:YY:YY:YY:YY wlan1mon
-```
-
-Leave this running. You'll see clients listed in the bottom half.
+1. How would you know if your laptop was deauthenticated and reconnected to a rogue AP?
+2. If an attacker controlled the WiFi network your laptop joined — what could they see?
+3. What type of workplace would be most at risk from a device left near a public area?
 
 ---
 
-## Part 2 — The Deauthentication Attack (20 min)
+## Part 2 — Live Demonstration (30 min)
 
-### Step 3 — Send deauth frames
+!!! info "INSTRUCTOR-LED DEMO"
+    Your lecturer will operate the recovered device and project the results. You do not
+    need to run any tools. Your job is to **observe, record, and think critically** about
+    what you see. Your observations are part of your AT1 evidence.
 
-Open a **second terminal** and run:
+### What you will see
 
-```bash
-# Send 10 deauth frames to all clients on the AP
-# Replace AP_MAC with the BSSID you noted
-sudo aireplay-ng --deauth 10 -a AP_MAC wlan1mon
-```
+The device connects to a web interface at `192.168.4.1`. Your lecturer will step through three actions:
 
-Watch your first terminal. You should see clients disappear briefly and then reconnect.
+**1 — Scan**  
+The device scans for nearby WiFi networks and lists every detected access point and connected client, including MAC addresses and signal strength.
 
-!!! danger "STOP AND DISCUSS"
-    Before continuing — your lecturer will pause here.
-    
-    **Discussion questions:**
-    
-    1. What did you observe in airodump when the deauth fired?
-    2. The client had no warning this happened. Why is that a problem?
-    3. What would a real attacker do at the moment the client reconnects?
+**2 — Deauth Attack**  
+The device sends forged disconnect frames to every client on `REDBACK-LAB`. Watch what happens to your own machine's WiFi connection.
+
+**3 — Rogue AP (Evil Twin)**  
+The device broadcasts a second `REDBACK-LAB` network. Watch your device's network list.
 
 ---
 
-## Part 3 — The Evil Twin (30 min)
+### Your Observation Tasks
 
-### Step 4 — Stand up a rogue AP
+While watching the demo, record the following. You will use this as AT1 evidence.
 
-Now you'll create an AP with the **same SSID** but stronger signal than the lab router.
+!!! note "AT1 OBSERVATION RECORD — complete during demo"
 
-```bash
-# Install hostapd if not present
-sudo apt install hostapd -y
+    **During the deauth attack:**
 
-# Create a config file
-sudo nano /tmp/evil-twin.conf
-```
+    - [ ] Did your device disconnect? Describe what you saw (any warning message? automatic reconnect?)
+    - [ ] How long did the disconnection last?
+    - [ ] Did your operating system notify you that anything unusual happened?
 
-Paste this config (update interface and channel):
+    **During the rogue AP:**
 
-```ini
-interface=wlan1mon
-driver=nl80211
-ssid=REDBACK-LAB
-hw_mode=g
-channel=6
-macaddr_acl=0
-ignore_broadcast_ssid=0
-```
-
-```bash
-# Start the rogue AP
-sudo hostapd /tmp/evil-twin.conf
-```
-
-### Step 5 — Watch for the reconnect
-
-In airodump you should see the target client associate with **your** AP instead of the lab router.
-
-!!! success "MISSION COMPLETE — when you see a client connect to your AP"
-    Screenshot airodump showing the client associated to your BSSID.
-    This is your evidence for the AT1 task.
+    - [ ] Screenshot your device's WiFi network list showing both `REDBACK-LAB` entries
+    - [ ] Can you tell which one is the real access point and which is the rogue? How?
+    - [ ] Write one sentence: what would happen if your device automatically connected to the wrong one?
 
 ---
 
-## Part 4 — Write the Incident Report (20 min)
+### Discussion — After the Demo
 
-This is where the **ICTSAS305 assessment evidence** lives. The attack is only half the job — a security professional has to document and communicate it.
+1. Your device reconnected automatically with no warning. What does that mean for corporate devices used off-site?
+2. The rogue AP had no password — would a real attacker use one? What would happen either way?
+3. HTTPS encrypts traffic between your browser and a website — does that protect you here? (Think carefully.)
 
-!!! note "AT1 PRACTICAL TASK — Incident Report"
-    **Maps to:** LAP Practical Task 9 (Incident Reports/Support Tickets)
-    **Units:** ICTSAS305 elements 1.3, 1.4, 2.2, 2.3
-    
-    Write a short incident report as if you were advising a Redback Systems employee 
-    whose laptop connected to a rogue AP at a café.
-    
-    Your report must include:
-    
-    - [ ] What happened (plain English, no jargon — client is non-technical)
-    - [ ] What an attacker could have captured (credentials, session cookies, DNS queries)
-    - [ ] What the client should do now (password changes, which accounts at risk)
-    - [ ] How to prevent it in future (VPN, WPA3, asking IT before connecting)
-    
+---
+
+## Part 3 — PCAP Analysis: Reading the Evidence (30 min)
+
+Your lecturer has provided a packet capture (`redback-deauth-sample.pcap`) taken during a deauth and rogue AP demonstration on the lab network. Open it in Wireshark on your Parrot OS machine.
+
+!!! example "INSTRUCTOR PREP NOTE"
+    Place the capture file at a location accessible to students before class — shared drive,
+    USB, or pre-loaded onto student machines. To capture your own during lab prep: run
+    Wireshark in monitor mode on a WiFi interface while operating the device, then save as
+    `.pcap`. Any capture showing deauth frames (type 0x0c) and beacon frames (type 0x08)
+    from two SSIDs with the same name will work.
+
+---
+
+### Step 1 — Open the capture
+
+Launch Wireshark on Parrot OS and open the provided file:
+
+```
+File → Open → redback-deauth-sample.pcap
+```
+
+You'll see a list of 802.11 wireless frames. Most will be normal traffic — beacons, probe requests, data. You're looking for two specific frame types.
+
+---
+
+### Step 2 — Find the deauthentication frames
+
+In the Wireshark filter bar, enter:
+
+```
+wlan.fc.type_subtype == 0x0c
+```
+
+This shows only deauthentication frames — the forged disconnect messages sent by the device.
+
+Click on one. In the packet detail panel, expand **IEEE 802.11 Deauthentication**. Look for:
+
+| Field | What to find | What it means |
+|---|---|---|
+| Source address | The AP's MAC (spoofed) | The device forged this — it's not the real AP sending this |
+| Destination address | `ff:ff:ff:ff:ff:ff` (broadcast) | Sent to *all* clients at once |
+| Reason code | Usually `7` | "Class 3 frame received from nonassociated station" — a generic disconnect reason |
+
+!!! note "The key question"
+    Where is the cryptographic signature on this frame? There isn't one. Any device in
+    range can forge a deauth frame with any source address. The client cannot verify it.
+
+**Screenshot the deauth frame with the detail panel open. Save this for your AT1 portfolio.**
+
+---
+
+### Step 3 — Find the rogue AP beacon
+
+Clear the filter and enter:
+
+```
+wlan.fc.type_subtype == 0x08
+```
+
+This shows beacon frames — the regular broadcasts that announce an access point's presence.
+
+Look for two beacon sources broadcasting the same SSID (`REDBACK-LAB`). They will have different MAC addresses (BSSIDs).
+
+| Field | Legitimate AP | Rogue AP |
+|---|---|---|
+| BSSID | Original MAC | Different MAC |
+| SSID | REDBACK-LAB | REDBACK-LAB |
+| Signal | Lower (further away) | Higher (device is close) |
+
+**Screenshot the beacon list showing two entries for the same SSID. Save for AT1.**
+
+---
+
+### Step 4 — Reflect
+
+In your own words (one paragraph, written in your notes):
+
+> *"The PCAP shows \_\_\_\_ deauthentication frames sent from MAC address \_\_\_\_, spoofed to appear as if they came from the legitimate access point. A second access point with the same SSID is visible in the beacon frames, broadcasting from MAC \_\_\_\_. A client automatically reconnecting after the deauth attack could join the rogue AP without any visible warning."*
+
+Fill in the blanks. This paragraph becomes part of your advisory memo.
+
+---
+
+## Part 4 — Advisory Memo to IT Management (25 min)
+
+You have observed the device operating and analysed the packet-level evidence. Now write the advisory.
+
+!!! note "AT1 PRACTICAL TASK — Advisory Memo"
+    **Task:** 8.1  
+    **Units:** ICTSAS214 elements 2.3, 3.1, 3.3 · ICTSAS305 elements 1.3, 1.4, 2.2, 2.3, 2.8, 2.9
+
+    Write a brief advisory memo addressed to the Redback Systems IT Manager. Your reader
+    is technically aware but not a security specialist. No jargon without explanation.
+
+    Your memo must cover:
+
+    - [ ] **What the device is** — what type of device was found, what firmware it runs, what it is capable of
+    - [ ] **What it did** — what the deauth attack does to client devices, and how the rogue AP works
+    - [ ] **What an attacker could capture** — credentials submitted via HTTP, session cookies, DNS queries, unencrypted emails; note that HTTPS protects content but not the fact that a connection was made
+    - [ ] **Risk to Redback Systems** — who in the office connects to WiFi? What data might be at risk?
+    - [ ] **Recommended actions** — immediate steps (change passwords for accounts used on WiFi that day) and longer-term defences (see below)
+
     Use the [Redback Systems Incident Report Template](../resources/intranet.md#incident-report-template).
 
 ---
 
-## Debrief — The Defence Side
-
-You just ran the attack. Now flip it.
-
-**Discussion — How do you defend against this?**
+## Debrief — How Do We Defend Against This?
 
 === "For Users"
-    - Always use a VPN on public WiFi
-    - Check for the padlock (HTTPS) — but note this doesn't mean the *site* is safe, just the connection is encrypted
-    - If your WiFi drops unexpectedly and reconnects — be suspicious
-    - WPA3 networks with PMF enabled block deauth attacks entirely
+    - Use a VPN on any WiFi network you don't control — this encrypts traffic even if you've joined a rogue AP
+    - If your WiFi drops unexpectedly and reconnects — be suspicious, especially on public or shared networks
+    - Check the network name carefully before connecting — two identical names in the list is a warning sign
+    - WPA3 networks with PMF enabled block deauth attacks at the protocol level
 
-=== "For Organisations"  
-    - Deploy 802.11w (Protected Management Frames) on all APs
-    - Use a WIDS (Wireless Intrusion Detection System) — some enterprise APs have this built in
-    - Issue staff VPN clients and mandate their use off-premises
-    - Train staff to report unexpected disconnects
+=== "For Organisations"
+    - **Deploy 802.11w (Protected Management Frames)** on all access points — this is the technical fix
+    - Issue and mandate VPN clients for all staff — the last line of defence when protocol controls fail
+    - Conduct physical security checks — reception areas, meeting rooms, and common spaces are risk zones for planted devices
+    - Train staff to report unexpected WiFi drops or unfamiliar network names
 
 === "For the Network"
-    - Segment guest WiFi from corporate network entirely
-    - Monitor for duplicate SSIDs via WIDS
-    - Use certificate-based authentication (802.1X) so clients verify the AP
+    - Use a **Wireless Intrusion Detection System (WIDS)** — enterprise APs (Cisco, Aruba, Meraki) have built-in duplicate SSID detection
+    - Segment guest WiFi from the corporate network entirely — a rogue AP on guest WiFi can't reach internal systems
+    - Use **802.1X certificate-based authentication** so devices verify the AP's identity before connecting
 
 ---
 
@@ -252,28 +273,31 @@ You just ran the attack. Now flip it.
 
     | What you did | Unit | Element/PC |
     |---|---|---|
-    | Ran deauth and documented the attack | ICTSAS214 | 2.1, 2.2 |
-    | Identified the threat (rogue AP) | ICTSAS214 | 1.1, 1.2 |
-    | Wrote incident report for client | ICTSAS305 | 1.3, 1.4, 2.2, 2.3 |
-    | Advised client in plain language | ICTSAS305 | 2.8, 2.9 |
-    | Documented additional requirements | ICTSAS305 | 2.3 |
+    | Researched destructive IoT firmware and identified the threat type | ICTSAS214 | 1.1, 1.2 |
+    | Observed demo and recorded network impact | ICTSAS214 | 2.2 |
+    | Analysed PCAP to identify deauth frames and rogue AP beacons | ICTSAS214 | 2.2, 2.3 |
+    | Documented findings and outcomes | ICTSAS214 | 3.1, 3.2, 3.3 |
+    | Investigated and documented the support issue | ICTSAS305 | 1.3 |
+    | Notified IT Manager of findings and provided advice | ICTSAS305 | 1.4, 2.2, 2.3 |
+    | Communicated technical findings in plain language | ICTSAS305 | 2.8, 2.9 |
 
 ---
 
 ## Resources
 
-- [Aircrack-ng documentation](https://www.aircrack-ng.org/doku.php)
+- [ESP8266 Deauther — SpacehuhnTech](https://github.com/SpacehuhnTech/esp8266_deauther)
 - [ACSC — Protecting Against WiFi Threats](https://www.cyber.gov.au)
 - [802.11w — Protected Management Frames explained](https://en.wikipedia.org/wiki/IEEE_802.11w-2009)
-- [Wireshark — Preview for next week](../sessions/session-09.md)
+- [Wireshark 802.11 Display Filters](https://www.wireshark.org/docs/dfref/w/wlan.html)
+- [Wireshark — Session 9 preview](../sessions/session-09.md)
 
 ---
 
 !!! warning "LEGAL & ETHICAL REMINDER"
-    Everything you did today was on an **isolated lab network** you have explicit
-    permission to test. Running deauth attacks or evil twin APs on any other network
-    — including TAFE wifi — is illegal under the **Criminal Code Act 1995 (Cth)** 
-    and the **Cybercrime Act 2001**.  
-    
-    The same skills that made you effective today make you employable.  
-    They also make you prosecutable if misused. Your choice.
+    The device demonstrated today was operated on an **isolated lab network** with explicit
+    permission. Operating a deauther or rogue access point on any other network — including
+    TAFE WiFi — is illegal under the **Criminal Code Act 1995 (Cth)** and the
+    **Cybercrime Act 2001**.
+
+    Understanding this attack makes you more capable of defending against it.
+    Deploying it without authorisation makes you a criminal. Your choice.

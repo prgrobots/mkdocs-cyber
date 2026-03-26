@@ -49,7 +49,7 @@ Your portfolio is a folder of documented evidence collected throughout the cours
 
 **Due:** Week 15  
 **Format:** Short answer, in class  
-**Covers:** Malware types, SPAM identification and handling, scanning and removal tools, security software features
+**Covers:** Spam types, destructive software identification and handling, protective measures, scanning and removal tools, security software features, documenting and reporting outcomes
 
 ---
 
