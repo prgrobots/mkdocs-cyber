@@ -66,7 +66,9 @@ WiFi uses **management frames** to handle connecting, disconnecting, and roaming
 
 In WPA2, these frames are **not authenticated**.
 
-```mermaid
+<div class="flex items-center justify-center" style="height: 400px;">
+
+```mermaid {scale: 0.8}
 sequenceDiagram
     participant C as Your Laptop
     participant AP as Real Access Point
@@ -79,6 +81,8 @@ sequenceDiagram
     A->>C: DEAUTH [spoofed from AP]
     C->>C: Disconnected — scanning for networks...
 ```
+
+</div>
 
 ---
 layout: default
