@@ -1,0 +1,32 @@
+/* ============================================
+   REDBACK SYSTEMS — CYBER COURSE
+   Clean, readable. Cyber accent only.
+   ============================================ */
+
+/* Session meta badges — small, readable, not decorative */
+.session-meta {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0 0 1.5rem 0;
+  flex-wrap: wrap;
+}
+
+.session-meta span {
+  font-size: 0.72rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 3px;
+  background: var(--md-default-fg-color--lightest);
+  color: var(--md-default-fg-color--light);
+  border: 1px solid var(--md-default-fg-color--lightest);
+}
+
+/* Code blocks — the one place a monospace feel is appropriate */
+.md-typeset pre > code {
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+/* Inline code — readable, not distracting */
+.md-typeset code {
+  font-size: 0.85em;
+}
