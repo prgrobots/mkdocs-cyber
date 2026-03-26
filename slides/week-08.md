@@ -40,9 +40,9 @@ It looks like a small circuit board — possibly a modified phone charger.
 - Advise management on the threat and remediation
 
 </div>
-<div class="flex items-center justify-center">
+<div class="flex items-start justify-center">
 
-<div style="transform: scale(0.7); transform-origin: center;">
+<div style="transform: scale(0.7); transform-origin: top center; margin-top: -20px;">
 
 ```mermaid
 flowchart TD
