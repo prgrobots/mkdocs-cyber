@@ -42,6 +42,8 @@ It looks like a small circuit board — possibly a modified phone charger.
 </div>
 <div class="flex items-center justify-center">
 
+<div style="transform: scale(0.7); transform-origin: center;">
+
 ```mermaid
 flowchart TD
     A["🔌 Suspicious IoT device<br/>found at reception"] --> B["Isolated to lab<br/>network"]
@@ -52,6 +54,8 @@ flowchart TD
     style A fill:#ff4444
     style F fill:#44ff44
 ```
+
+</div>
 
 </div>
 </div>
@@ -66,9 +70,9 @@ WiFi uses **management frames** to handle connecting, disconnecting, and roaming
 
 In WPA2, these frames are **not authenticated**.
 
-<div class="flex items-center justify-center" style="height: 400px;">
+<div style="transform: scale(0.65); transform-origin: center; margin: -60px 0;">
 
-```mermaid {scale: 0.8}
+```mermaid
 sequenceDiagram
     participant C as Your Laptop
     participant AP as Real Access Point
