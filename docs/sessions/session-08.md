@@ -20,6 +20,8 @@
     Your task: **find out what this device does, assess the risk to Redback Systems, and
     advise IT management.**
 
+[📊 View Slides](/mkdocs-cyber/slides/week-08/){.md-button .md-button--primary}
+
 ---
 
 ## Learning Objectives
