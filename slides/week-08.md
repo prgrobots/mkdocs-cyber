@@ -49,7 +49,7 @@ flowchart TD
     A["🔌 Suspicious IoT device<br/>found at reception"] --> B["Isolated to lab<br/>network"]
     B --> C["What does it do?"]
     C --> D["📊 Observe demo"]
-    D --> E["🔍 Analyse PCAP"]
+    D --> E["🔍 Analyse screenshot"]
     E --> F["✉️ Advise IT Manager"]
     style A fill:#ff4444
     style F fill:#44ff44
@@ -243,12 +243,13 @@ Watch a live demonstration of the device attacking the lab network.
 - Understand what the attacker is doing in real time
 
 ## Part 2 — Analyse (30 min)
-Open a packet capture in Wireshark.
+Study a Wireshark screenshot showing deauthentication frames.
 
 **You will:**
-- Find deauthentication frames
-- Find rogue AP beacon frames
-- See the evidence of the attack at the frame level
+- Identify frame type and subtype values
+- Read source/destination MAC addresses
+- Understand why the attack works (no authentication)
+- Annotate screenshot for your portfolio
 
 ## Part 3 — Advise (25 min)
 Write an advisory memo to the IT Manager.

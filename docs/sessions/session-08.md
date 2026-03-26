@@ -142,86 +142,98 @@ While watching the demo, record the following. You will use this as AT1 evidence
 
 ---
 
-## Part 3 — PCAP Analysis: Reading the Evidence (30 min)
+## Part 3 — Reading the Evidence: Deauth Frame Analysis (30 min)
 
-Your lecturer has provided a packet capture (`redback-deauth-sample.pcap`) taken during a deauth and rogue AP demonstration on the lab network. Open it in Wireshark on your Parrot OS machine.
+You've observed the attack happening live. Now let's examine what those frames actually look like at the packet level.
 
-!!! example "INSTRUCTOR PREP NOTE"
-    Place the capture file at a location accessible to students before class — shared drive,
-    USB, or pre-loaded onto student machines. To capture your own during lab prep: run
-    Wireshark in monitor mode on a WiFi interface while operating the device, then save as
-    `.pcap`. Any capture showing deauth frames (type 0x0c) and beacon frames (type 0x08)
-    from two SSIDs with the same name will work.
+Below is a Wireshark capture showing deauthentication frames captured during a WiFi attack. Study it carefully — in Week 9 you'll use Wireshark yourself, but today we're focusing on understanding what the frames mean.
 
----
+![Wireshark deauthentication frame capture](../assets/wireshark-deauth-example.png)
 
-### Step 1 — Open the capture
-
-Launch Wireshark on Parrot OS and open the provided file:
-
-```
-File → Open → redback-deauth-sample.pcap
-```
-
-You'll see a list of 802.11 wireless frames. Most will be normal traffic — beacons, probe requests, data. You're looking for two specific frame types.
+*Screenshot source: [YeahHub — Analyzing Deauthentication Packets with Wireshark](https://www.yeahhub.com/analyzing-deauthentication-packets-wireshark/)*
 
 ---
 
-### Step 2 — Find the deauthentication frames
+### Understanding 802.11 Frame Types
 
-In the Wireshark filter bar, enter:
+WiFi uses three main frame types:
+
+| Type | Value | Purpose | Examples |
+|---|---|---|---|
+| **Management** | `0` | Network control | Association, deauth, beacons |
+| **Control** | `1` | Medium access | ACK, RTS, CTS |
+| **Data** | `2` | Actual data | Web traffic, file transfers |
+
+Each type has **subtypes** that specify the exact frame. For deauthentication:
+
+- **Type:** `0` (management)
+- **Subtype:** `12` (0x0c in hex) — deauthentication
+
+In Wireshark, you'd filter for this using:
 
 ```
-wlan.fc.type_subtype == 0x0c
+wlan.fc.type_subtype eq 12
 ```
 
-This shows only deauthentication frames — the forged disconnect messages sent by the device.
+or more explicitly:
 
-Click on one. In the packet detail panel, expand **IEEE 802.11 Deauthentication**. Look for:
+```
+(wlan.fc.type eq 0) && (wlan.fc.type_subtype eq 0x0c)
+```
 
-| Field | What to find | What it means |
+!!! info "Filter Reference — For Week 9"
+    Common frame filters you'll use next week:
+    
+    - `wlan.fc.type_subtype eq 8` — Beacon frames (AP announcements)
+    - `wlan.fc.type_subtype eq 12` — Deauth frames (disconnect attacks)
+    - `wlan.fc.type eq 0` — All management frames
+    - `wlan.fc.type eq 2` — All data frames
+
+---
+
+### Analysing the Deauth Frame
+
+Look at the screenshot above. In the packet details (middle panel), you can see:
+
+| Field | What it shows | What it means |
 |---|---|---|
-| Source address | The AP's MAC (spoofed) | The device forged this — it's not the real AP sending this |
-| Destination address | `ff:ff:ff:ff:ff:ff` (broadcast) | Sent to *all* clients at once |
-| Reason code | Usually `7` | "Class 3 frame received from nonassociated station" — a generic disconnect reason |
+| **Source address** | The AP's MAC address | The device **forged** this — it's spoofing the real AP |
+| **Destination address** | Often `ff:ff:ff:ff:ff:ff` (broadcast) | Sent to **all** clients at once |
+| **Reason code** | Usually `7` | "Class 3 frame received from nonassociated station" — a generic disconnect reason |
 
-!!! note "The key question"
-    Where is the cryptographic signature on this frame? There isn't one. Any device in
-    range can forge a deauth frame with any source address. The client cannot verify it.
-
-**Screenshot the deauth frame with the detail panel open. Save this for your AT1 portfolio.**
-
----
-
-### Step 3 — Find the rogue AP beacon
-
-Clear the filter and enter:
-
-```
-wlan.fc.type_subtype == 0x08
-```
-
-This shows beacon frames — the regular broadcasts that announce an access point's presence.
-
-Look for two beacon sources broadcasting the same SSID (`REDBACK-LAB`). They will have different MAC addresses (BSSIDs).
-
-| Field | Legitimate AP | Rogue AP |
-|---|---|---|
-| BSSID | Original MAC | Different MAC |
-| SSID | REDBACK-LAB | REDBACK-LAB |
-| Signal | Lower (further away) | Higher (device is close) |
-
-**Screenshot the beacon list showing two entries for the same SSID. Save for AT1.**
+!!! danger "The Critical Flaw"
+    **Where is the cryptographic signature on this frame?**
+    
+    There isn't one. In WPA2, management frames are **not authenticated**. Any device in radio range can forge a deauth frame with any source MAC address. The client has no way to verify it came from the real AP.
+    
+    This is why the attack works.
 
 ---
 
-### Step 4 — Reflect
+### Your Task — Annotated Screenshot
 
-In your own words (one paragraph, written in your notes):
+**For your AT1 portfolio:**
 
-> *"The PCAP shows \_\_\_\_ deauthentication frames sent from MAC address \_\_\_\_, spoofed to appear as if they came from the legitimate access point. A second access point with the same SSID is visible in the beacon frames, broadcasting from MAC \_\_\_\_. A client automatically reconnecting after the deauth attack could join the rogue AP without any visible warning."*
+1. Save the screenshot above (right-click → Save image)
+2. Open it in an image editor or annotation tool
+3. Label the following with arrows or text boxes:
+   - Source MAC address (spoofed AP address)
+   - Destination MAC address
+   - Reason code
+   - Frame type/subtype values
+4. Add a brief caption: *"Deauthentication frame captured during WiFi attack — shows spoofed source MAC with no authentication"*
 
-Fill in the blanks. This paragraph becomes part of your advisory memo.
+This annotated screenshot demonstrates your understanding of the frame structure and the vulnerability.
+
+---
+
+### Reflection Question
+
+In one paragraph (write this in your notes):
+
+> *"The deauthentication frame shown in the capture was sent with a source MAC address of \_\_\_\_, making it appear as if the legitimate access point sent the disconnect command. The client device receives this unauthenticated management frame and immediately disconnects. Without cryptographic verification (which WPA2 does not provide for management frames), the client cannot tell this is a forgery. This allows an attacker within radio range to forcibly disconnect any device from the network."*
+
+Fill in the MAC address from the screenshot. This paragraph will form part of your advisory memo.
 
 ---
 
@@ -277,7 +289,7 @@ You have observed the device operating and analysed the packet-level evidence. N
     |---|---|---|
     | Researched destructive IoT firmware and identified the threat type | ICTSAS214 | 1.1, 1.2 |
     | Observed demo and recorded network impact | ICTSAS214 | 2.2 |
-    | Analysed PCAP to identify deauth frames and rogue AP beacons | ICTSAS214 | 2.2, 2.3 |
+    | Analysed deauth frame screenshot to identify frame structure and vulnerability | ICTSAS214 | 2.2, 2.3 |
     | Documented findings and outcomes | ICTSAS214 | 3.1, 3.2, 3.3 |
     | Investigated and documented the support issue | ICTSAS305 | 1.3 |
     | Notified IT Manager of findings and provided advice | ICTSAS305 | 1.4, 2.2, 2.3 |
