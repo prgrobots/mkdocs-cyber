@@ -115,8 +115,8 @@ Recommendation:   Minimum 12 characters, mixed case, numbers, symbols
 
 !!! example "TASK 10.1 — Crack the Hashes (AT1 Practical Task 5)"
 
-    Your lecturer will provide `redback-hashes.txt` containing NTLM hashes from 
-    the "compromised" server.
+    Download `redback-hashes.txt` containing NTLM hashes from 
+    the "compromised" server: [Lab Downloads](../resources/downloads.md)
     
     ```bash
     # Step 1 — identify hash type
