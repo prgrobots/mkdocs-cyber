@@ -1,0 +1,938 @@
+[
+  {
+    "manual": "mk4s",
+    "section": "first-print",
+    "page": 16,
+    "file": "mk4s/first-print/p16_first-print_1.jpeg",
+    "native": "1200x733",
+    "bbox_pt": [
+      35.8,
+      318.1,
+      383.7,
+      530.5
+    ]
+  },
+  {
+    "manual": "mk4s",
+    "section": "first-print",
+    "page": 17,
+    "file": "mk4s/first-print/p17_first-print_1.jpeg",
+    "native": "1600x858",
+    "bbox_pt": [
+      55.6,
+      281.7,
+      364.0,
+      447.1
+    ]
+  },
+  {
+    "manual": "mk4s",
+    "section": "first-print",
+    "page": 18,
+    "file": "mk4s/first-print/p18_first-print_1.png",
+    "native": "480x320",
+    "bbox_pt": [
+      100.9,
+      261.7,
+      318.6,
+      406.8
+    ]
+  },
+  {
+    "manual": "mk4s",
+    "section": "first-print",
+    "page": 19,
+    "file": "mk4s/first-print/p19_first-print_1.png",
+    "native": "480x320",
+    "bbox_pt": [
+      36.0,
+      399.4,
+      202.0,
+      510.0
+    ]
+  },
+  {
+    "manual": "mk4s",
+    "section": "first-print",
+    "page": 19,
+    "file": "mk4s/first-print/p19_first-print_2.png",
+    "native": "480x320",
+    "bbox_pt": [
+      217.2,
+      399.4,
+      383.2,
+      510.0
+    ]
+  },
+  {
+    "manual": "mk4s",
+    "section": "first-print",
+    "page": 20,
+    "file": "mk4s/first-print/p20_first-print_1.jpeg",
+    "native": "1600x1200",
+    "bbox_pt": [
+      36.0,
+      341.6,
+      202.0,
+      466.1
+    ]
+  },
+  {
+    "manual": "mk4s",
+    "section": "first-print",
+    "page": 20,
+    "file": "mk4s/first-print/p20_first-print_2.jpeg",
+    "native": "1600x1200",
+    "bbox_pt": [
+      217.2,
+      341.6,
+      383.2,
+      466.1
+    ]
+  },
+  {
+    "manual": "mk4s",
+    "section": "first-print",
+    "page": 21,
+    "file": "mk4s/first-print/p21_first-print_1.png",
+    "native": "480x320",
+    "bbox_pt": [
+      38.4,
+      40.2,
+      199.6,
+      147.6
+    ]
+  },
+  {
+    "manual": "mk4s",
+    "section": "first-print",
+    "page": 21,
+    "file": "mk4s/first-print/p21_first-print_2.png",
+    "native": "480x320",
+    "bbox_pt": [
+      219.6,
+      40.2,
+      380.8,
+      147.6
+    ]
+  },
+  {
+    "manual": "mk4s",
+    "section": "first-print",
+    "page": 22,
+    "file": "mk4s/first-print/p22_first-print_1.png",
+    "native": "480x320",
+    "bbox_pt": [
+      82.8,
+      149.4,
+      336.8,
+      318.7
+    ]
+  },
+  {
+    "manual": "mk4s",
+    "section": "first-print",
+    "page": 23,
+    "file": "mk4s/first-print/p23_first-print_1.jpeg",
+    "native": "1072x556",
+    "bbox_pt": [
+      35.8,
+      96.0,
+      383.7,
+      276.4
+    ]
+  },
+  {
+    "manual": "mk4s",
+    "section": "first-print",
+    "page": 24,
+    "file": "mk4s/first-print/p24_first-print_1.jpeg",
+    "native": "1600x1200",
+    "bbox_pt": [
+      35.8,
+      36.9,
+      383.7,
+      297.7
+    ]
+  },
+  {
+    "manual": "mk4s",
+    "section": "first-print",
+    "page": 25,
+    "file": "mk4s/first-print/p25_first-print_1.jpeg",
+    "native": "1600x1200",
+    "bbox_pt": [
+      35.8,
+      145.1,
+      383.7,
+      406.0
+    ]
+  },
+  {
+    "manual": "mk4s",
+    "section": "first-print",
+    "page": 28,
+    "file": "mk4s/first-print/p28_first-print_1.jpeg",
+    "native": "1600x1200",
+    "bbox_pt": [
+      35.8,
+      36.9,
+      383.7,
+      297.7
+    ]
+  },
+  {
+    "manual": "mk4s",
+    "section": "first-print",
+    "page": 29,
+    "file": "mk4s/first-print/p29_first-print_1.jpeg",
+    "native": "1600x701",
+    "bbox_pt": [
+      35.8,
+      247.3,
+      383.7,
+      399.7
+    ]
+  },
+  {
+    "manual": "mk4s",
+    "section": "first-print",
+    "page": 30,
+    "file": "mk4s/first-print/p30_first-print_1.png",
+    "native": "480x320",
+    "bbox_pt": [
+      82.8,
+      366.5,
+      336.8,
+      535.8
+    ]
+  },
+  {
+    "manual": "mk4s",
+    "section": "printing-own-models",
+    "page": 39,
+    "file": "mk4s/printing-own-models/p39_printing-own-models_1.png",
+    "native": "2287x1771",
+    "bbox_pt": [
+      68.8,
+      287.9,
+      350.7,
+      506.2
+    ]
+  },
+  {
+    "manual": "mk4s",
+    "section": "printing-own-models",
+    "page": 42,
+    "file": "mk4s/printing-own-models/p42_printing-own-models_1.png",
+    "native": "4523x2743",
+    "bbox_pt": [
+      35.8,
+      57.3,
+      383.7,
+      268.3
+    ]
+  },
+  {
+    "manual": "mk4s",
+    "section": "printing-own-models",
+    "page": 43,
+    "file": "mk4s/printing-own-models/p43_printing-own-models_1.png",
+    "native": "601x323",
+    "bbox_pt": [
+      100.9,
+      182.5,
+      318.6,
+      299.5
+    ]
+  },
+  {
+    "manual": "mk4s",
+    "section": "printing-own-models",
+    "page": 44,
+    "file": "mk4s/printing-own-models/p44_printing-own-models_1.png",
+    "native": "2371x1620",
+    "bbox_pt": [
+      64.6,
+      189.7,
+      354.9,
+      388.0
+    ]
+  },
+  {
+    "manual": "mk4s",
+    "section": "printing-own-models",
+    "page": 46,
+    "file": "mk4s/printing-own-models/p46_printing-own-models_1.png",
+    "native": "2365x1620",
+    "bbox_pt": [
+      82.8,
+      125.9,
+      336.8,
+      299.8
+    ]
+  },
+  {
+    "manual": "mk4s",
+    "section": "printing-own-models",
+    "page": 46,
+    "file": "mk4s/printing-own-models/p46_printing-own-models_2.png",
+    "native": "2881x1579",
+    "bbox_pt": [
+      82.8,
+      400.6,
+      336.8,
+      539.8
+    ]
+  },
+  {
+    "manual": "mk4s",
+    "section": "printing-own-models",
+    "page": 47,
+    "file": "mk4s/printing-own-models/p47_printing-own-models_1.png",
+    "native": "2535x1692",
+    "bbox_pt": [
+      46.5,
+      218.0,
+      373.0,
+      435.9
+    ]
+  },
+  {
+    "manual": "mk4s",
+    "section": "printing-own-models",
+    "page": 48,
+    "file": "mk4s/printing-own-models/p48_printing-own-models_1.png",
+    "native": "1986x1042",
+    "bbox_pt": [
+      35.8,
+      160.6,
+      383.7,
+      343.1
+    ]
+  },
+  {
+    "manual": "mk4s",
+    "section": "printing-own-models",
+    "page": 49,
+    "file": "mk4s/printing-own-models/p49_printing-own-models_1.jpeg",
+    "native": "1847x1048",
+    "bbox_pt": [
+      35.8,
+      115.5,
+      383.7,
+      312.8
+    ]
+  },
+  {
+    "manual": "mk4s",
+    "section": "maintenance",
+    "page": 57,
+    "file": "mk4s/maintenance/p57_maintenance_1.jpeg",
+    "native": "1999x715",
+    "bbox_pt": [
+      35.8,
+      243.0,
+      383.7,
+      367.4
+    ]
+  },
+  {
+    "manual": "mk4s",
+    "section": "print-quality",
+    "page": 66,
+    "file": "mk4s/print-quality/p66_print-quality_1.png",
+    "native": "420x596",
+    "bbox_pt": [
+      0.0,
+      0.0,
+      419.5,
+      595.3
+    ]
+  },
+  {
+    "manual": "mk4s",
+    "section": "print-quality",
+    "page": 66,
+    "file": "mk4s/print-quality/p66_print-quality_2.jpeg",
+    "native": "1296x852",
+    "bbox_pt": [
+      0.0,
+      0.0,
+      419.5,
+      225.5
+    ]
+  },
+  {
+    "manual": "mk4s",
+    "section": "print-quality",
+    "page": 66,
+    "file": "mk4s/print-quality/p66_print-quality_3.jpeg",
+    "native": "1757x940",
+    "bbox_pt": [
+      0.0,
+      0.0,
+      419.5,
+      224.4
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "first-print",
+    "page": 10,
+    "file": "mk3s/first-print/p10_first-print_1.jpeg",
+    "native": "1600x1600",
+    "bbox_pt": [
+      176.4,
+      268.7,
+      418.9,
+      511.2
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "first-print",
+    "page": 11,
+    "file": "mk3s/first-print/p11_first-print_1.jpeg",
+    "native": "1600x1200",
+    "bbox_pt": [
+      73.6,
+      424.1,
+      525.4,
+      698.1
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "first-print",
+    "page": 12,
+    "file": "mk3s/first-print/p12_first-print_1.jpeg",
+    "native": "1600x1200",
+    "bbox_pt": [
+      73.6,
+      73.6,
+      523.2,
+      349.0
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "first-print",
+    "page": 12,
+    "file": "mk3s/first-print/p12_first-print_2.jpeg",
+    "native": "1196x420",
+    "bbox_pt": [
+      166.6,
+      625.3,
+      428.6,
+      717.6
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "first-print",
+    "page": 13,
+    "file": "mk3s/first-print/p13_first-print_1.jpeg",
+    "native": "1600x1154",
+    "bbox_pt": [
+      98.3,
+      401.6,
+      496.9,
+      626.8
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "first-print",
+    "page": 14,
+    "file": "mk3s/first-print/p14_first-print_1.jpeg",
+    "native": "1600x967",
+    "bbox_pt": [
+      73.6,
+      373.8,
+      525.4,
+      647.0
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "first-print",
+    "page": 15,
+    "file": "mk3s/first-print/p15_first-print_1.jpeg",
+    "native": "1600x1291",
+    "bbox_pt": [
+      174.1,
+      73.6,
+      418.1,
+      271.0
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "first-print",
+    "page": 23,
+    "file": "mk3s/first-print/p23_first-print_1.jpeg",
+    "native": "1591x1012",
+    "bbox_pt": [
+      162.9,
+      133.6,
+      432.4,
+      305.5
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "first-print",
+    "page": 24,
+    "file": "mk3s/first-print/p24_first-print_1.jpeg",
+    "native": "1600x1067",
+    "bbox_pt": [
+      87.8,
+      73.6,
+      508.2,
+      353.5
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "first-print",
+    "page": 25,
+    "file": "mk3s/first-print/p25_first-print_1.jpeg",
+    "native": "1600x864",
+    "bbox_pt": [
+      73.6,
+      310.0,
+      521.7,
+      552.5
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "first-print",
+    "page": 25,
+    "file": "mk3s/first-print/p25_first-print_2.jpeg",
+    "native": "1600x208",
+    "bbox_pt": [
+      73.6,
+      574.2,
+      525.4,
+      628.0
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "first-print",
+    "page": 26,
+    "file": "mk3s/first-print/p26_first-print_1.jpeg",
+    "native": "1600x533",
+    "bbox_pt": [
+      93.1,
+      148.6,
+      502.2,
+      284.5
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "first-print",
+    "page": 27,
+    "file": "mk3s/first-print/p27_first-print_1.jpeg",
+    "native": "1600x366",
+    "bbox_pt": [
+      85.6,
+      73.6,
+      509.7,
+      151.6
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "printing-own-models",
+    "page": 46,
+    "file": "mk3s/printing-own-models/p46_printing-own-models_1.jpeg",
+    "native": "1600x1200",
+    "bbox_pt": [
+      210.9,
+      313.8,
+      384.3,
+      437.6
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "printing-own-models",
+    "page": 47,
+    "file": "mk3s/printing-own-models/p47_printing-own-models_1.jpeg",
+    "native": "1537x930",
+    "bbox_pt": [
+      73.6,
+      73.6,
+      525.4,
+      346.8
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "printing-own-models",
+    "page": 47,
+    "file": "mk3s/printing-own-models/p47_printing-own-models_2.jpeg",
+    "native": "1318x408",
+    "bbox_pt": [
+      73.6,
+      552.5,
+      525.4,
+      692.8
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "printing-own-models",
+    "page": 48,
+    "file": "mk3s/printing-own-models/p48_printing-own-models_1.jpeg",
+    "native": "1600x719",
+    "bbox_pt": [
+      92.3,
+      171.1,
+      503.7,
+      356.5
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "printing-own-models",
+    "page": 49,
+    "file": "mk3s/printing-own-models/p49_printing-own-models_1.jpeg",
+    "native": "1569x458",
+    "bbox_pt": [
+      114.8,
+      73.6,
+      480.4,
+      180.2
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "printing-own-models",
+    "page": 50,
+    "file": "mk3s/printing-own-models/p50_printing-own-models_1.jpeg",
+    "native": "1600x928",
+    "bbox_pt": [
+      73.6,
+      281.5,
+      525.4,
+      543.5
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "printing-own-models",
+    "page": 51,
+    "file": "mk3s/printing-own-models/p51_printing-own-models_1.jpeg",
+    "native": "1290x829",
+    "bbox_pt": [
+      116.3,
+      351.3,
+      479.7,
+      584.7
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "printing-own-models",
+    "page": 52,
+    "file": "mk3s/printing-own-models/p52_printing-own-models_1.jpeg",
+    "native": "1600x894",
+    "bbox_pt": [
+      131.4,
+      73.6,
+      463.9,
+      259.0
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "printing-own-models",
+    "page": 52,
+    "file": "mk3s/printing-own-models/p52_printing-own-models_2.jpeg",
+    "native": "1600x894",
+    "bbox_pt": [
+      129.9,
+      355.0,
+      466.1,
+      542.7
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "printing-own-models",
+    "page": 53,
+    "file": "mk3s/printing-own-models/p53_printing-own-models_1.jpeg",
+    "native": "1600x932",
+    "bbox_pt": [
+      135.9,
+      161.4,
+      460.1,
+      350.5
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "printing-own-models",
+    "page": 53,
+    "file": "mk3s/printing-own-models/p53_printing-own-models_2.jpeg",
+    "native": "1600x839",
+    "bbox_pt": [
+      123.1,
+      521.7,
+      472.9,
+      705.6
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "material-guide",
+    "page": 64,
+    "file": "mk3s/material-guide/p64_material-guide_1.jpeg",
+    "native": "1600x817",
+    "bbox_pt": [
+      150.1,
+      453.4,
+      445.9,
+      605.8
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "material-guide",
+    "page": 64,
+    "file": "mk3s/material-guide/p64_material-guide_2.jpeg",
+    "native": "1600x572",
+    "bbox_pt": [
+      151.6,
+      626.8,
+      444.4,
+      731.1
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "maintenance",
+    "page": 64,
+    "file": "mk3s/maintenance/p64_maintenance_1.jpeg",
+    "native": "1600x817",
+    "bbox_pt": [
+      150.1,
+      453.4,
+      445.9,
+      605.8
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "maintenance",
+    "page": 64,
+    "file": "mk3s/maintenance/p64_maintenance_2.jpeg",
+    "native": "1600x572",
+    "bbox_pt": [
+      151.6,
+      626.8,
+      444.4,
+      731.1
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "maintenance",
+    "page": 66,
+    "file": "mk3s/maintenance/p66_maintenance_1.jpeg",
+    "native": "1600x1200",
+    "bbox_pt": [
+      88.6,
+      443.6,
+      351.3,
+      641.0
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "maintenance",
+    "page": 66,
+    "file": "mk3s/maintenance/p66_maintenance_2.jpeg",
+    "native": "1255x1600",
+    "bbox_pt": [
+      354.3,
+      447.4,
+      506.7,
+      641.0
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "maintenance",
+    "page": 67,
+    "file": "mk3s/maintenance/p67_maintenance_1.jpeg",
+    "native": "750x464",
+    "bbox_pt": [
+      168.9,
+      180.2,
+      426.4,
+      338.5
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "maintenance",
+    "page": 68,
+    "file": "mk3s/maintenance/p68_maintenance_1.jpeg",
+    "native": "1600x847",
+    "bbox_pt": [
+      73.6,
+      73.6,
+      525.4,
+      313.0
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "maintenance",
+    "page": 70,
+    "file": "mk3s/maintenance/p70_maintenance_1.jpeg",
+    "native": "1600x1025",
+    "bbox_pt": [
+      184.7,
+      148.6,
+      410.6,
+      293.5
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "maintenance",
+    "page": 70,
+    "file": "mk3s/maintenance/p70_maintenance_2.jpeg",
+    "native": "1446x1600",
+    "bbox_pt": [
+      134.4,
+      329.5,
+      461.6,
+      692.8
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "maintenance",
+    "page": 72,
+    "file": "mk3s/maintenance/p72_maintenance_1.jpeg",
+    "native": "1165x591",
+    "bbox_pt": [
+      73.6,
+      103.6,
+      510.4,
+      325.0
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "maintenance",
+    "page": 72,
+    "file": "mk3s/maintenance/p72_maintenance_2.jpeg",
+    "native": "575x224",
+    "bbox_pt": [
+      73.6,
+      500.7,
+      288.2,
+      584.7
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "maintenance",
+    "page": 72,
+    "file": "mk3s/maintenance/p72_maintenance_3.jpeg",
+    "native": "587x266",
+    "bbox_pt": [
+      291.2,
+      481.2,
+      520.9,
+      584.7
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "faq",
+    "page": 73,
+    "file": "mk3s/faq/p73_faq_1.jpeg",
+    "native": "1600x1200",
+    "bbox_pt": [
+      120.9,
+      327.3,
+      474.4,
+      592.2
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "faq",
+    "page": 74,
+    "file": "mk3s/faq/p74_faq_1.jpeg",
+    "native": "1600x1045",
+    "bbox_pt": [
+      73.6,
+      191.4,
+      525.4,
+      486.4
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "faq",
+    "page": 75,
+    "file": "mk3s/faq/p75_faq_1.jpeg",
+    "native": "1600x1198",
+    "bbox_pt": [
+      135.1,
+      210.2,
+      460.1,
+      452.6
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "faq",
+    "page": 75,
+    "file": "mk3s/faq/p75_faq_2.jpeg",
+    "native": "1600x1067",
+    "bbox_pt": [
+      135.9,
+      488.7,
+      460.1,
+      707.1
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "faq",
+    "page": 76,
+    "file": "mk3s/faq/p76_faq_1.jpeg",
+    "native": "1600x1122",
+    "bbox_pt": [
+      130.6,
+      176.4,
+      465.4,
+      412.1
+    ]
+  },
+  {
+    "manual": "mk3s",
+    "section": "faq",
+    "page": 79,
+    "file": "mk3s/faq/p79_faq_1.png",
+    "native": "1600x405",
+    "bbox_pt": [
+      213.2,
+      418.9,
+      370.1,
+      457.9
+    ]
+  }
+]
