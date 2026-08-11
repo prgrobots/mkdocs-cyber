@@ -134,6 +134,15 @@ nav:
     - Redback Systems Intranet: resources/intranet.md
     - Glossary: resources/glossary.md
 
+  - "3D Printing Course":
+    - Course Home: 3d-printing/index.md
+    - Module 1 — Your First Print: 3d-printing/first-print.md
+    - Module 2 — Printing Your Own Models: 3d-printing/printing-own-models.md
+    - Module 3 — Material Guide: 3d-printing/material-guide.md
+    - Module 4 — Regular Maintenance: 3d-printing/maintenance.md
+    - Module 5 — FAQ & Basic Troubleshooting: 3d-printing/faq.md
+    - Module 6 — Troubleshooting Print Quality: 3d-printing/print-quality.md
+
 extra_css:
   - stylesheets/custom.css
 
